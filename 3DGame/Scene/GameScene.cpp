@@ -132,6 +132,7 @@ void GameScene::DrawGame(float delta)
     //MV1DrawModel(model_handl);
     // ここまでがシェーダを使わない----------------------------------------------
     // ここからがシェーダを使った物----------------------------------------------
+    SetBackgroundColor(128, 128, 128);
     SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
     direction_[0] = directionLight_.direction;
     direction_[1] = Vector3(directionLight_.pading,1.0f,1.0f);

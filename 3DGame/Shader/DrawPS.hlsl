@@ -28,29 +28,29 @@ float4 main(PSInput input) : SV_TARGET
 	//return tex.Sample(sam,input.uv);
 	// ↓ディレクションライトで照らしているバージョン
 	// ピクセルの法線とライトの方向の内積を計算する
-	//float3 i = float3(1.0f,1.0f,1.0f);
-	//float  t = dot(input.norm,ligDirection);
-	//// 内積の結果に-1を乗算する
-	//t *= -1.0f;
-	//if (t < 0.0f)
-	//{
-	//	t = 0.0f;
-	//}
-	//float3 diffuseLig = ligColor * t;
-	//float4 finalColor = tex.Sample(sam, input.uv);
-	//finalColor.xyz *= diffuseLig;
-	//return finalColor;
+	float3 i = float3(1.0f,1.0f,1.0f);
+	float  t = dot(input.norm,ligDirection);
+	// 内積の結果に-1を乗算する
+	t *= -1.0f;
+	if (t < 0.0f)
+	{
+		t = 0.0f;
+	}
+	float3 diffuseLig = ligColor * t;
+	float4 finalColor = tex.Sample(sam, input.uv);
+	finalColor.xyz *= diffuseLig;
+	return finalColor;
 	//-------------------------------------------------
 	// トゥーンシェーダを使った描画
 
-	float4 color = tex.Sample(sam,input.uv);
-	// ハーフランバート拡散照明によるライティング計算
-	float p = saturate(dot(input.norm * -1.0f, ligDirection));
-	p = p * 0.5f + 0.5f;
-	p = saturate(p * p);
-	return clamp(p, 0.0f, 0.99f);
-	
-	// 計算結果よりトゥーンシェーダのテクスチャからフェッチ
-	float4 Col = toon.Sample(sam, float2(p, 0.0f));
-	return color *= Col;
+	//float4 color = tex.Sample(sam,input.uv);
+	//// ハーフランバート拡散照明によるライティング計算
+	//float p = saturate(dot(input.norm * -1.0f, ligDirection));
+	//p = p * 0.5f + 0.5f;
+	//p = saturate(p * p);
+	//p = clamp(p, 0.0f, 0.99f);
+	////return toon.Sample(sam, float2(p, 0.0f));
+	//// 計算結果よりトゥーンシェーダのテクスチャからフェッチ
+	//float4 Col = toon.Sample(sam, float2(p, 0.0f));
+	//return color *= Col;
 }
