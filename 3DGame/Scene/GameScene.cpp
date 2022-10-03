@@ -37,19 +37,21 @@ bool GameScene::InitGame(void)
     ps = LoadPixelShader("DrawPS.pso");
     vs = LoadVertexShader("DrawVS.vso");
     // ライトは斜め上からあたっている
-    directionLight.direction.x = 1.0f;
-    directionLight.direction.y = -1.0f;
-    directionLight.direction.z = 0.0f;
+    directionLight_.direction.x = -1.0f;
+    directionLight_.direction.y = -1.0f;
+    directionLight_.direction.z = 1.0f;
     // 正規化する
-    directionLight.direction.Normalized();
+    directionLight_.direction.Normalized();
     // ライトのカラーは灰色
-    directionLight.color.x = 1.0f;
-    directionLight.color.y = 1.0f;
-    directionLight.color.z = 0.0f;
+    directionLight_.color.x = 1.0f;
+    directionLight_.color.y = 1.0f;
+    directionLight_.color.z = 1.0f;
     // 定数バッファの確保
     cbuff = CreateShaderConstantBuffer(sizeof(Vector3) * 4);
-    threshold = static_cast<Vector3*>(GetBufferShaderConstantBuffer(cbuff));
+    direction_ = static_cast<Vector3*>(GetBufferShaderConstantBuffer(cbuff));
+    color_ = static_cast<Vector3*>(GetBufferShaderConstantBuffer(cbuff));
     model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_handl, VGet(x, y, z));
     // 同じモデルを複数使う場合はこっちを使う
     //model_handl_copy = MV1DuplicateModel(model_handl);
@@ -130,13 +132,16 @@ void GameScene::DrawGame(float delta)
     //MV1DrawModel(model_handl);
     // ここまでがシェーダを使わない----------------------------------------------
     // ここからがシェーダを使った物----------------------------------------------
-    threshold[0] = directionLight.direction;
-    threshold[1] = directionLight.color;
+    SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
+    direction_[0] = directionLight_.direction;
+    direction_[1] = Vector3(directionLight_.pading,1.0f,1.0f);
+    direction_[2] = directionLight_.color;
     UpdateShaderConstantBuffer(cbuff);
     SetShaderConstantBuffer(cbuff, DX_SHADERTYPE_PIXEL, 0);
     MV1SetUseOrigShader(true);
     SetUseZBuffer3D(true);
     SetWriteZBuffer3D(true);
+    SetUseTextureToShader(1, toonMap_);
     MV1SetUseZBuffer(model_handl, true);
     MV1SetWriteZBuffer(model_handl, true);
     SetUseVertexShader(vs);

@@ -50,9 +50,11 @@ private:
     float x, y, z;
     // シェーダ用
     int ps, vs;
-    DirectionLight directionLight;
+    int toonMap_;
+    DirectionLight directionLight_;
     // 定数バッファの確保用変数
     int cbuff;
-    Vector3* threshold;
+    Vector3* direction_;
+    Vector3* color_;
 };
 
