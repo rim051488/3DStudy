@@ -33,8 +33,15 @@ bool GameScene::InitGame(void)
 {
     x = screenSize_.x / 2;
     y = screenSize_.y / 2;
-    z = 0.0f;
+    //z = 0.0f;
+    z = -550.0f;
+    // お試し用シェーダ
     ps = LoadPixelShader("DrawPS.pso");
+    // Lambert用のシェーダ
+    //ps = LoadPixelShader("Lambert.pso");
+    // ToonShader用のシェーダ
+    //ps = LoadPixelShader("ToonShader.pso");
+
     vs = LoadVertexShader("DrawVS.vso");
     // ライトは斜め上からあたっている
     directionLight_.direction.x = -1.0f;
@@ -50,7 +57,8 @@ bool GameScene::InitGame(void)
     cbuff = CreateShaderConstantBuffer(sizeof(Vector3) * 4);
     direction_ = static_cast<Vector3*>(GetBufferShaderConstantBuffer(cbuff));
     color_ = static_cast<Vector3*>(GetBufferShaderConstantBuffer(cbuff));
-    model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_handl, VGet(x, y, z));
     // 同じモデルを複数使う場合はこっちを使う
@@ -135,18 +143,20 @@ void GameScene::DrawGame(float delta)
     SetBackgroundColor(128, 128, 128);
     SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
     direction_[0] = directionLight_.direction;
+    // ここの一つ上にずれる現象をどうにかすること
     direction_[1] = Vector3(directionLight_.pading,1.0f,1.0f);
     direction_[2] = directionLight_.color;
+    //---------------------------------------------------------------------------
     UpdateShaderConstantBuffer(cbuff);
     SetShaderConstantBuffer(cbuff, DX_SHADERTYPE_PIXEL, 0);
     MV1SetUseOrigShader(true);
-    SetUseZBuffer3D(true);
-    SetWriteZBuffer3D(true);
-    SetUseTextureToShader(1, toonMap_);
-    MV1SetUseZBuffer(model_handl, true);
-    MV1SetWriteZBuffer(model_handl, true);
     SetUseVertexShader(vs);
     SetUsePixelShader(ps);
+    SetUseTextureToShader(1, toonMap_);
+    SetUseZBuffer3D(true);
+    SetWriteZBuffer3D(true);
+    MV1SetUseZBuffer(model_handl, true);
+    MV1SetWriteZBuffer(model_handl, true);
     MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
     MV1DrawModel(model_handl);
     // ここまでがシェーダを使ったもの---------------------------------------------

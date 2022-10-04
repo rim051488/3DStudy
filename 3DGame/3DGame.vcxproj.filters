@@ -114,5 +114,7 @@
   <ItemGroup>
     <FxCompile Include="Shader\DrawPS.hlsl" />
     <FxCompile Include="Shader\DrawVS.hlsl" />
+    <FxCompile Include="Shader\Lambert.hlsl" />
+    <FxCompile Include="Shader\ToonShader.hlsl" />
   </ItemGroup>
 </Project>

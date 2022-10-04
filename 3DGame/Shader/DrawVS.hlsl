@@ -37,6 +37,7 @@ VSOutput main(VertexInput input)
 	float4 pos = float4(input.pos, 1);
 
 	pos.xyz = mul(pos, localM);//ワールド
+	output.pos = pos;
 	pos.xyz = mul(pos, viewM);//ビュー
 	pos = mul(pos, ProjectionM);//プロジェクション
 
@@ -46,11 +47,11 @@ VSOutput main(VertexInput input)
 	float3 bin = mul(input.binormal, localM);
 
 	output.svpos = pos;
-	output.pos = input.pos;
+
 	output.uv = input.uv0.xy;
 	output.norm = normalize(norm);
-	output.col = input.diffuse.rgb;
 	output.tan = normalize(tan);
 	output.bin = normalize(bin);
+	output.col = input.diffuse.rgb;
 	return output;
 }
