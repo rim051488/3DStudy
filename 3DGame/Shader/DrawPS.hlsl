@@ -36,9 +36,9 @@ Texture2D<float4> toon:register(t1);
 float4 main(PSInput input) : SV_TARGET
 {
 	// ↓色が変わるだけでテクスチャ関係なし
-	return float4(0.0f, 1.0f, 1.0f, 1.0f);
+	//return float4(0.0f, 1.0f, 1.0f, 1.0f);
 	// ↓テクスチャを貼り付けるだけ
-	//return tex.Sample(sam,input.uv);
+	return tex.Sample(sam,input.uv);
 
 	// トゥーンシェーダを使った描画
 	//float4 color = tex.Sample(sam,input.uv);

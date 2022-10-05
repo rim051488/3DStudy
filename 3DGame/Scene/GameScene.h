@@ -51,6 +51,7 @@ private:
     // シェーダ用
     int ps, vs;
     int toonMap_;
+    int tlbertType;
     DirectionLight directionLight_;
     // 定数バッファの確保用変数
     int cbuff;
