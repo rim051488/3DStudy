@@ -3,6 +3,7 @@
 #include <functional>
 #include <list>
 #include "BaseScene.h"
+#include "../Obj/ObjMng.h"
 #include "../common/Light.h"
 
 class GameScene :
@@ -52,10 +53,15 @@ private:
     int ps, vs;
     int toonMap_;
     int tlbertType;
+    // ディレクション
     DirectionLight directionLight_;
+    // スポットライト
+    SpotLight spotLight_;
     // 定数バッファの確保用変数
     int cbuff;
     Vector3* direction_;
     Vector3* color_;
+
+    std::shared_ptr<ObjMng> player_;
 };
 

@@ -25,10 +25,10 @@ struct VSOutput {
 	float4 svpos:SV_POSITION;
 	float3 pos:POSITION;
 	float3 norm:NORMAL;
-	float2 uv:TECOORD;
-	float3 col:COLOR0;
 	float3 tan:TANGENT;
 	float3 bin:BINORMAL;
+	float2 uv:TECOORD;
+	float3 col:COLOR0;
 };
 
 VSOutput main(VertexInput input)
