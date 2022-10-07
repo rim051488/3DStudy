@@ -5,6 +5,8 @@ struct DirectionLight
 	Vector3 direction;//ライトの方向。３要素のベクトルで表現される
 	float pading;//詰め物
 	Vector3 color;//ライトのカラー。光の３原色RGBで表される
+	float pading1;//詰め物
+	Vector3 eyePos;//視点の位置
 };
 
 struct PointLight

@@ -10,9 +10,7 @@ struct PSInput {
 };
 
 SamplerState sam:register(s0);
-sampler Toon:register(s1);
 Texture2D<float4> tex:register(t0);
-Texture2D<float4> toon:register(t1);
 
 // ディレクションライト用の定数バッファ
 cbuffer DirectionLightCb : register(b0)
@@ -25,7 +23,6 @@ float4 main(PSInput input) : SV_TARGET
 {
 	// Lambert拡散反射を適用している
 	// ピクセルの法線とライトの方向の内積を計算する
-	float3 i = float3(1.0f,1.0f,1.0f);
 	float  t = dot(input.norm,ligDirection);
 	// 内積の結果に-1を乗算する
 	t *= -1.0f;
