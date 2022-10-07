@@ -57,8 +57,8 @@ bool GameScene::InitGame(void)
     cbuff = CreateShaderConstantBuffer(sizeof(Vector3) * 4);
     direction_ = static_cast<Vector3*>(GetBufferShaderConstantBuffer(cbuff));
     color_ = static_cast<Vector3*>(GetBufferShaderConstantBuffer(cbuff));
-    //model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
-    model_handl = MV1LoadModel("./Resource/Model/kuruma.mv1");
+    model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/kuruma.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_handl, VGet(x, y, z));
