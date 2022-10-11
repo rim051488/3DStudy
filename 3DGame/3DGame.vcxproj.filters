@@ -122,6 +122,12 @@
     <ClInclude Include="Obj\ObjMng.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="common\ShaderCommon\ShaderCommon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ShaderCommon\ShaderVS.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\DrawPS.hlsl" />
@@ -129,5 +135,6 @@
     <FxCompile Include="Shader\Lambert.hlsl" />
     <FxCompile Include="Shader\ToonShader.hlsl" />
     <FxCompile Include="Shader\Phong.hlsl" />
+    <FxCompile Include="Shader\Skinning.hlsl" />
   </ItemGroup>
 </Project>

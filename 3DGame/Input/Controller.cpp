@@ -20,6 +20,18 @@ const inputData& Controller::Get(void)
 	return data_;
 }
 
+bool Controller::MousePress(InputID id)
+{
+	if (InputID::Decision == id)
+	{
+		if (GetMouseInput() & MOUSE_INPUT_LEFT)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Controller::Press(InputID id)
 {
 	return data_[static_cast<size_t>(id)].first;
