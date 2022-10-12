@@ -50,6 +50,8 @@ public:
 	/// <returns> コントローラーの種類 </returns>
 	virtual CntType GetCntType(void) = 0;
 
+	bool MousePress(InputID id);
+
 	/// <summary> 今押しているか </summary>
 	/// <param name="id"> キーの種類 </param>
 	/// <returns> 成功時true失敗時false </returns>

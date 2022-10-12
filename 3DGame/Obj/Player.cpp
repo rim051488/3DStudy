@@ -16,19 +16,21 @@ Player::~Player()
 
 bool Player::Init(void)
 {
+    //pos_ = Vector3(530.0f, 330.0f, -500.0f);
     pos_ = Vector3(530.0f, 330.0f, 400.0f);
     //pos_ = Vector3(530.0f, 330.0f, 750.0f);
     angle = 0.0f;
     //z = -550.0f;
     // お試し用シェーダ
-    //ps = LoadPixelShader("DrawPS.pso");
+    ps = LoadPixelShader("DrawPS.pso");
     // Lambert用のシェーダ
     //ps = LoadPixelShader("Lambert.pso");
     // ToonShader用のシェーダ
     //ps = LoadPixelShader("ToonShader.pso");
     // Phong用のシェーダ
-    ps = LoadPixelShader("Phong.pso");
+    //ps = LoadPixelShader("Phong.pso");
 
+    //vs = LoadVertexShader("t.vso");
     vs = LoadVertexShader("DrawVS.vso");
     // ライトは斜め上からあたっている
     directionLight_.direction = Vector3{ -1.0f,-1.0f,1.0f };
@@ -44,9 +46,10 @@ bool Player::Init(void)
     // 定数バッファの確保
     cbuff = CreateShaderConstantBuffer(sizeof(DirectionLight) * 4);
     direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
-    //model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
-    model_handl = MV1LoadModel("./Resource/Model/mc.mv1");
+    model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/mc.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/ki.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_handl, VGet(pos_.x, pos_.y, pos_.z));
     SetUseVertexShader(vs);
@@ -94,23 +97,36 @@ void Player::Update(float delta)
     {
         pos_.y -= 1;
     }
+    if (controller_->MousePress(InputID::Decision))
+    {
+        pos_.y -= 10;
+    }
     MV1SetPosition(model_handl, VGet(pos_.x, pos_.y, pos_.z));
 }
 
 void Player::Draw(void)
 {
+    SetBackgroundColor(128, 128, 128);
     if (tlbertType == DX_MV1_VERTEX_TYPE_1FRAME) {
         DrawString(10, 10, "not normal not skinning", 0xffffff);
     }
     else if (tlbertType == DX_MV1_VERTEX_TYPE_4FRAME) {
-        DrawString(10, 10, "not normal use skinning", 0xffffff);
+        DrawString(10, 10, "not normal use skinning4", 0xffffff);
+    }
+    else if (tlbertType == DX_MV1_VERTEX_TYPE_8FRAME) {
+
+        DrawString(10, 10, "not normal use skinning8", 0xffffff);
     }
     else if (tlbertType == DX_MV1_VERTEX_TYPE_NMAP_1FRAME) {
         DrawString(10, 10, "use normal not skinning", 0xffffff);
     }
     else if (tlbertType == DX_MV1_VERTEX_TYPE_NMAP_4FRAME) {
-        DrawString(10, 10, "use normal use skinning", 0xffffff);
+        DrawString(10, 10, "use normal use skinning4", 0xffffff);
     }
+    else if (tlbertType == DX_MV1_VERTEX_TYPE_NMAP_8FRAME) {
+        DrawString(10, 10, "use normal use skinning8", 0xffffff);
+    }
+
     // この書き方だと自作シェーダを使うと機能しないから考えること
     //SetCameraNearFar(1.0f, 1000.0f);
     // 自作のシェーダを使わない--------------------------------------------------
@@ -119,7 +135,6 @@ void Player::Draw(void)
     //MV1DrawModel(model_handl);
     //// ここまでがシェーダを使わない----------------------------------------------
     // ここからがシェーダを使った物----------------------------------------------
-    SetBackgroundColor(128, 128, 128);
     SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
     direction_[0] = directionLight_;
     UpdateShaderConstantBuffer(cbuff);
