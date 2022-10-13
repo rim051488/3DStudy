@@ -16,9 +16,12 @@ private:
     // 回転とポジション
     float angle;
     Vector3 pos_;
+    Vector3 Cpos_;
+    Vector3 CAngle_;
     // シェーダ用
     int ps, vs;
     int toonMap_;
+    // モデルのタイプを調べる
     int tlbertType;
     // ディレクション
     DirectionLight directionLight_;
