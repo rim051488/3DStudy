@@ -17,20 +17,23 @@ Player::~Player()
 bool Player::Init(void)
 {
     //pos_ = Vector3(530.0f, 330.0f, -500.0f);
-    pos_ = Vector3(530.0f, 330.0f, 400.0f);
+    pos_ = Vector3(0, 0, 0);
     //pos_ = Vector3(530.0f, 330.0f, 750.0f);
     angle = 0.0f;
     //z = -550.0f;
+    
+    
     // お試し用シェーダ
-    ps = LoadPixelShader("DrawPS.pso");
+    //ps = LoadPixelShader("ShaderPolygon3DTestPS.pso");
+    //ps = LoadPixelShader("DrawPS.pso");
     // Lambert用のシェーダ
-    //ps = LoadPixelShader("Lambert.pso");
+    ps = LoadPixelShader("Lambert.pso");
     // ToonShader用のシェーダ
     //ps = LoadPixelShader("ToonShader.pso");
     // Phong用のシェーダ
     //ps = LoadPixelShader("Phong.pso");
 
-    //vs = LoadVertexShader("t.vso");
+    //vs = LoadVertexShader("s.vso");
     vs = LoadVertexShader("DrawVS.vso");
     // ライトは斜め上からあたっている
     directionLight_.direction = Vector3{ -1.0f,-1.0f,1.0f };
@@ -47,6 +50,7 @@ bool Player::Init(void)
     cbuff = CreateShaderConstantBuffer(sizeof(DirectionLight) * 4);
     direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
     model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/player_model.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/mc.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/ki.mv1");
@@ -57,8 +61,6 @@ bool Player::Init(void)
     SetUseTextureToShader(1, toonMap_);
     SetUseZBuffer3D(true);
     SetWriteZBuffer3D(true);
-    // 同じモデルを複数使う場合はこっちを使う
-    //model_handl_copy = MV1DuplicateModel(model_handl);
     auto tlNum = MV1GetTriangleListNum(model_handl);
     tlbertType = -1;
     for (int i = 0; i < tlNum; ++i)
@@ -101,12 +103,13 @@ void Player::Update(float delta)
     {
         pos_.y -= 10;
     }
-    MV1SetPosition(model_handl, VGet(pos_.x, pos_.y, pos_.z));
 }
 
 void Player::Draw(void)
 {
     SetBackgroundColor(128, 128, 128);
+    MV1SetPosition(model_handl, VGet(pos_.x, pos_.y, pos_.z));
+    //SetCameraPositionAndTarget_UpVecY(VGet(0, -100, 0), VGet(0, 100, 0));
     if (tlbertType == DX_MV1_VERTEX_TYPE_1FRAME) {
         DrawString(10, 10, "not normal not skinning", 0xffffff);
     }
@@ -126,23 +129,23 @@ void Player::Draw(void)
     else if (tlbertType == DX_MV1_VERTEX_TYPE_NMAP_8FRAME) {
         DrawString(10, 10, "use normal use skinning8", 0xffffff);
     }
-
+    DrawFormatString(10, 25, 0xffffff, "X座標：%d",static_cast<int>(pos_.x));
     // この書き方だと自作シェーダを使うと機能しないから考えること
     //SetCameraNearFar(1.0f, 1000.0f);
     // 自作のシェーダを使わない--------------------------------------------------
-    //MV1SetUseOrigShader(false);
-    //MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
-    //MV1DrawModel(model_handl);
-    //// ここまでがシェーダを使わない----------------------------------------------
-    // ここからがシェーダを使った物----------------------------------------------
-    SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
-    direction_[0] = directionLight_;
-    UpdateShaderConstantBuffer(cbuff);
-    SetShaderConstantBuffer(cbuff, DX_SHADERTYPE_PIXEL, 0);
-    MV1SetUseOrigShader(true);
-    MV1SetUseZBuffer(model_handl, true);
-    MV1SetWriteZBuffer(model_handl, true);
+    MV1SetUseOrigShader(false);
     MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
     MV1DrawModel(model_handl);
+    //// ここまでがシェーダを使わない----------------------------------------------
+    // ここからがシェーダを使った物----------------------------------------------
+    //SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
+    //direction_[0] = directionLight_;
+    //UpdateShaderConstantBuffer(cbuff);
+    //SetShaderConstantBuffer(cbuff, DX_SHADERTYPE_PIXEL, 0);
+    //MV1SetUseOrigShader(true);
+    //MV1SetUseZBuffer(model_handl, true);
+    //MV1SetWriteZBuffer(model_handl, true);
+    //MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
+    //MV1DrawModel(model_handl);
     // ここまでがシェーダを使ったもの---------------------------------------------
 }

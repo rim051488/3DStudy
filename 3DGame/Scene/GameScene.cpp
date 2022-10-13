@@ -139,42 +139,6 @@ void GameScene::DrawGame(float delta)
     SetDrawScreen(screenID_);
     ClsDrawScreen();
     SetBackgroundColor(255, 255, 255);
-    //if (tlbertType == DX_MV1_VERTEX_TYPE_1FRAME) {
-    //    DrawString(10, 10, "not normal not skinning", 0xffffff);
-    //}
-    //else if (tlbertType == DX_MV1_VERTEX_TYPE_4FRAME) {
-    //    DrawString(10, 10, "not normal use skinning", 0xffffff);
-    //}
-    //else if (tlbertType == DX_MV1_VERTEX_TYPE_NMAP_1FRAME) {
-    //    DrawString(10, 10, "use normal not skinning", 0xffffff);
-    //}
-    //else if (tlbertType == DX_MV1_VERTEX_TYPE_NMAP_4FRAME) {
-    //    DrawString(10, 10, "use normal use skinning", 0xffffff);
-    //}
-    //// この書き方だと自作シェーダを使うと機能しないから考えること
-    ////SetCameraNearFar(1.0f, 1000.0f);
-    //// 自作のシェーダを使わない--------------------------------------------------
-    ////MV1SetUseOrigShader(false);
-    ////MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
-    ////MV1DrawModel(model_handl);
-    //// ここまでがシェーダを使わない----------------------------------------------
-    //// ここからがシェーダを使った物----------------------------------------------
-    //SetBackgroundColor(128, 128, 128);
-    //SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
-    //direction_[0] = directionLight_.direction;
-    //// ここの一つ上にずれる現象をどうにかすること
-    //direction_[1] = directionLight_.pading;
-    //direction_[2] = directionLight_.color;
-    ////---------------------------------------------------------------------------
-    ////SetCameraPositionAndTargetAndUpVec(VGet(320, 240, 0), VGet(320.0f, 240.0f, 1.0f), VGet(0, 1, 0));
-    //UpdateShaderConstantBuffer(cbuff);
-    //SetShaderConstantBuffer(cbuff, DX_SHADERTYPE_PIXEL, 0);
-    //MV1SetUseOrigShader(true);
-    //MV1SetUseZBuffer(model_handl, true);
-    //MV1SetWriteZBuffer(model_handl, true);
-    //MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
-    //MV1DrawModel(model_handl);
-    // ここまでがシェーダを使ったもの---------------------------------------------
     player_->Draw();
 }
 
