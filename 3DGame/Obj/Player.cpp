@@ -16,12 +16,8 @@ Player::~Player()
 
 bool Player::Init(void)
 {
-    //pos_ = Vector3(530.0f, 330.0f, -500.0f);
     pos_ = Vector3(0, 0, 0);
-    //pos_ = Vector3(530.0f, 330.0f, 750.0f);
-    angle = 0.0f;
-    //z = -550.0f;
-    
+    angle = 0.0f; 
     
     // お試し用シェーダ
     //ps = LoadPixelShader("ShaderPolygon3DTestPS.pso");
@@ -33,8 +29,8 @@ bool Player::Init(void)
     // Phong用のシェーダ
     //ps = LoadPixelShader("Phong.pso");
 
-    //vs = LoadVertexShader("s.vso");
-    vs = LoadVertexShader("DrawVS.vso");
+    vs = LoadVertexShader("ns4.vso");
+    //vs = LoadVertexShader("DrawVS.vso");
     // ライトは斜め上からあたっている
     directionLight_.direction = Vector3{ -1.0f,-1.0f,1.0f };
     // 正規化する
@@ -49,8 +45,8 @@ bool Player::Init(void)
     // 定数バッファの確保
     cbuff = CreateShaderConstantBuffer(sizeof(DirectionLight) * 4);
     direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
-    model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
-    //model_handl = MV1LoadModel("./Resource/Model/player_model.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    model_handl = MV1LoadModel("./Resource/Model/player_model.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/mc.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/ki.mv1");
@@ -133,19 +129,19 @@ void Player::Draw(void)
     // この書き方だと自作シェーダを使うと機能しないから考えること
     //SetCameraNearFar(1.0f, 1000.0f);
     // 自作のシェーダを使わない--------------------------------------------------
-    MV1SetUseOrigShader(false);
-    MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
-    MV1DrawModel(model_handl);
-    //// ここまでがシェーダを使わない----------------------------------------------
-    // ここからがシェーダを使った物----------------------------------------------
-    //SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
-    //direction_[0] = directionLight_;
-    //UpdateShaderConstantBuffer(cbuff);
-    //SetShaderConstantBuffer(cbuff, DX_SHADERTYPE_PIXEL, 0);
-    //MV1SetUseOrigShader(true);
-    //MV1SetUseZBuffer(model_handl, true);
-    //MV1SetWriteZBuffer(model_handl, true);
+    //MV1SetUseOrigShader(false);
     //MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
     //MV1DrawModel(model_handl);
+    //// ここまでがシェーダを使わない----------------------------------------------
+    // ここからがシェーダを使った物----------------------------------------------
+    SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
+    direction_[0] = directionLight_;
+    UpdateShaderConstantBuffer(cbuff);
+    SetShaderConstantBuffer(cbuff, DX_SHADERTYPE_PIXEL, 0);
+    MV1SetUseOrigShader(true);
+    MV1SetUseZBuffer(model_handl, true);
+    MV1SetWriteZBuffer(model_handl, true);
+    MV1SetRotationXYZ(model_handl, VGet(0, angle, 0));
+    MV1DrawModel(model_handl);
     // ここまでがシェーダを使ったもの---------------------------------------------
 }

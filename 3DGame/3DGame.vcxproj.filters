@@ -136,5 +136,6 @@
     <FxCompile Include="Shader\ToonShader.hlsl" />
     <FxCompile Include="Shader\Phong.hlsl" />
     <FxCompile Include="Shader\Skinning.hlsl" />
+    <FxCompile Include="Shader\NormS4VS.hlsl" />
   </ItemGroup>
 </Project>
