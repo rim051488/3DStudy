@@ -5,9 +5,10 @@ struct VertexInput {
 	float4 spec : COLOR1;//スペキュラカラー
 	float4 uv0 : TEXCOORD0;//テクスチャ座標
 	float4 uv1 : TEXCOORD1;//サブテクスチャ座標
-	// バンプマップ
-	float3 tan:TANGENT;//接ベクトル
-	float3 binorm:BINORMAL;//従法線
+	//// バンプマップ
+	//float3 tan:TANGENT;//接ベクトル
+	//float3 binorm:BINORMAL;//従法線
+	
 	// スキニングメッシュ
 	int4 BlendIndices0:BLENDINDICES0;//ボーン初期用float型定数配列インデックス0
 	float4 BlendWeight0:BLENDWEIGHT0;//ボーン処理用ウエイト値0
@@ -26,8 +27,8 @@ struct VSOutput {
 	//float3 col:COLOR0;
 	float4 uv	:	TEXCOORD0;		// テクスチャ座標
 	float3 vpos	:	TEXCOORD1;		// 座標(ビュー空間)
-	float3 tan			:	TEXCOORD2;		// 接線(ビュー空間)
-	float3 bin		:	TEXCOORD3;		// 従法線(ビュー空間)
+	//float3 tan			:	TEXCOORD2;		// 接線(ビュー空間)
+	//float3 bin		:	TEXCOORD3;		// 従法線(ビュー空間)
 	float3 norm			:	TEXCOORD4;		// 法線(ビュー空間)
 	float4 pos			:	SV_POSITION;	// 座標(プロジェクション空間)
 };
@@ -159,35 +160,32 @@ VSOutput main(VertexInput input)
 	IWorldNrm.x = dot(input.norm, ILocalWorldMatrix[0].xyz);
 	IWorldNrm.y = dot(input.norm, ILocalWorldMatrix[1].xyz);
 	IWorldNrm.z = dot(input.norm, ILocalWorldMatrix[2].xyz);
-	float3 IWorldBin;
-	IWorldBin.x = dot(input.binorm, ILocalWorldMatrix[0].xyz);
-	IWorldBin.y = dot(input.binorm, ILocalWorldMatrix[1].xyz);
-	IWorldBin.z = dot(input.binorm, ILocalWorldMatrix[2].xyz);
-	float3 IWorldTan;
-	IWorldTan.x = dot(input.tan, ILocalWorldMatrix[0].xyz);
-	IWorldTan.y = dot(input.tan, ILocalWorldMatrix[1].xyz);
-	IWorldTan.z = dot(input.tan, ILocalWorldMatrix[2].xyz);
+	//float3 IWorldBin;
+	//IWorldBin.x = dot(input.binorm, ILocalWorldMatrix[0].xyz);
+	//IWorldBin.y = dot(input.binorm, ILocalWorldMatrix[1].xyz);
+	//IWorldBin.z = dot(input.binorm, ILocalWorldMatrix[2].xyz);
+	//float3 IWorldTan;
+	//IWorldTan.x = dot(input.tan, ILocalWorldMatrix[0].xyz);
+	//IWorldTan.y = dot(input.tan, ILocalWorldMatrix[1].xyz);
+	//IWorldTan.z = dot(input.tan, ILocalWorldMatrix[2].xyz);
 
 	float3 IViewNrm;
 	IViewNrm.x = dot(IWorldNrm, g_Base.viewM[0].xyz);
 	IViewNrm.y = dot(IWorldNrm, g_Base.viewM[1].xyz);
 	IViewNrm.z = dot(IWorldNrm, g_Base.viewM[2].xyz);
-	float3 IViewBin;
-	IViewBin.x = dot(IWorldBin, g_Base.viewM[0].xyz);
-	IViewBin.y = dot(IWorldBin, g_Base.viewM[1].xyz);
-	IViewBin.z = dot(IWorldBin, g_Base.viewM[2].xyz);
-	float3 IViewTan;
-	IViewTan.x = dot(IWorldTan, g_Base.viewM[0].xyz);
-	IViewTan.y = dot(IWorldTan, g_Base.viewM[1].xyz);
-	IViewTan.z = dot(IWorldTan, g_Base.viewM[2].xyz);
+	//float3 IViewBin;
+	//IViewBin.x = dot(IWorldBin, g_Base.viewM[0].xyz);
+	//IViewBin.y = dot(IWorldBin, g_Base.viewM[1].xyz);
+	//IViewBin.z = dot(IWorldBin, g_Base.viewM[2].xyz);
+	//float3 IViewTan;
+	//IViewTan.x = dot(IWorldTan, g_Base.viewM[0].xyz);
+	//IViewTan.y = dot(IWorldTan, g_Base.viewM[1].xyz);
+	//IViewTan.z = dot(IWorldTan, g_Base.viewM[2].xyz);
 
 	output.uv.x = dot(input.uv0, g_OtherMatrix.TextureMatrix[0][0]);
 	output.uv.y = dot(input.uv0, g_OtherMatrix.TextureMatrix[0][1]);
 
 	output.vpos = IViewPos.xyz;
 	output.norm = IViewNrm;
-
-	output.tan = input.tan;
-	output.bin = input.binorm;
 	return output;
 }
