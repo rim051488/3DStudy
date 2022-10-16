@@ -16,12 +16,8 @@ Player::~Player()
 
 bool Player::Init(void)
 {
-    //pos_ = Vector3(530.0f, 330.0f, -500.0f);
     pos_ = Vector3(0, 0, 0);
-    //pos_ = Vector3(530.0f, 330.0f, 750.0f);
-    angle = 0.0f;
-    //z = -550.0f;
-    
+    angle = 0.0f; 
     
     // お試し用シェーダ
     //ps = LoadPixelShader("ShaderPolygon3DTestPS.pso");
@@ -33,8 +29,9 @@ bool Player::Init(void)
     // Phong用のシェーダ
     //ps = LoadPixelShader("Phong.pso");
 
-    //vs = LoadVertexShader("s.vso");
-    vs = LoadVertexShader("DrawVS.vso");
+    vs = LoadVertexShader("s.vso");
+    //vs = LoadVertexShader("ns4.vso");
+    //vs = LoadVertexShader("DrawVS.vso");
     // ライトは斜め上からあたっている
     directionLight_.direction = Vector3{ -1.0f,-1.0f,1.0f };
     // 正規化する
@@ -49,10 +46,10 @@ bool Player::Init(void)
     // 定数バッファの確保
     cbuff = CreateShaderConstantBuffer(sizeof(DirectionLight) * 4);
     direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
-    model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/player_model.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/mc.mv1");
-    //model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
+    model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/ki.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_handl, VGet(pos_.x, pos_.y, pos_.z));
