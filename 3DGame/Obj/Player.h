@@ -31,5 +31,9 @@ private:
     //Vector3* direction_;
     //Vector3* color_;
     std::unique_ptr<Controller> controller_;
+    // ƒJƒƒ‰‚Ì§Œä
+    VECTOR cPos_;
+    Vector3 cTarget_;
+    Vector3 cRot_;
 };
 
