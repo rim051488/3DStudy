@@ -20,7 +20,7 @@ bool Player::Init(void)
     angle = 0.0f; 
     
     // お試し用シェーダ
-    ps = LoadPixelShader("tex.pso");
+    ps = LoadPixelShader("Shader/tex.pso");
     // Lambert用のシェーダ
     //ps = LoadPixelShader("Lambert.pso");
     // ToonShader用のシェーダ
@@ -30,7 +30,7 @@ bool Player::Init(void)
 
     //vs = LoadVertexShader("s.vso");
     //vs = LoadVertexShader("ns4.vso");
-    vs = LoadVertexShader("DrawVS.vso");
+    vs = LoadVertexShader("Shader/usns.vso");
     //vs = LoadVertexShader("nnss.vso");
 
     // ライトは斜め上からあたっている

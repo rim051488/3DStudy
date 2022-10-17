@@ -1,6 +1,5 @@
 #include <DxLib.h>
 #include "GameScene.h"
-#include "../Obj/Player.h"
 #include "../common/ImageMng.h"
 
 GameScene::GameScene()
@@ -32,14 +31,12 @@ bool GameScene::InitScreen(void)
 
 bool GameScene::InitGame(void)
 {
-    player_ = std::make_shared<Player>();
 
     return true;
 }
 
 uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
 {
-    player_->Update(delta);
     DrawOwnScreen(delta);
     return ownScene;
 }
@@ -69,7 +66,6 @@ void GameScene::DrawGame(float delta)
     SetDrawScreen(screenID_);
     ClsDrawScreen();
     SetBackgroundColor(255, 255, 255);
-    player_->Draw();
 }
 
 void GameScene::DrawGameEnd(float delta)
