@@ -122,6 +122,10 @@
     <FxCompile>
       <ObjectFileOutput>$(ProjectDir)%(Filename).pso</ObjectFileOutput>
     </FxCompile>
+    <PreBuildEvent>
+      <Command>fxc.exe  /T ps_5_0 /E "main" /O3  /Fo Shader/tex.pso Shader/DrawPS.hlsl
+fxc.exe  /T vs_5_0 /E "main" /O3  /Fo Shader/usns.vso Shader/DrawVS.hlsl</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -143,6 +147,10 @@
     <FxCompile>
       <ObjectFileOutput>$(ProjectDir)%(Filename).pso</ObjectFileOutput>
     </FxCompile>
+    <PreBuildEvent>
+      <Command>fxc.exe  /T ps_5_0 /E "main" /O3  /Fo Shader/tex.pso Shader/DrawPS.hlsl
+fxc.exe  /T vs_5_0 /E "main" /O3  /Fo Shader/usns.vso Shader/DrawVS.hlsl</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common\Debug.cpp" />

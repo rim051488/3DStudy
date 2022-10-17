@@ -1,22 +1,39 @@
+//struct PSInput {
+//	//float4 svpos:SV_POSITION;
+//	//float3 pos:POSITION;
+//	//float3 norm:NORMAL;
+//	//float2 uv:TECOORD;
+//	//float2 toon:TECOORD;
+//	//float3 col:COLOR;
+//	//float3 tan:TANGENT;
+//	//float3 bin:BINORMAL;
+//	float4 Diffuse         : COLOR0;		// ディフューズカラー
+//	float4 Specular        : COLOR1;		// スペキュラカラー
+//	float2 uv    : TEXCOORD0;	// xy:テクスチャ座標 zw:サブテクスチャ座標
+//	float3 VPosition       : TEXCOORD1;	// 頂点座標から視線へのベクトル( ビュー空間 )
+//	float3 VNormal         : TEXCOORD2;	// 法線( ビュー空間 )
+//	float3 VTan            : TEXCOORD3;    // 接線( ビュー空間 )
+//	float3 VBin            : TEXCOORD4;    // 従法線( ビュー空間 )
+//};
+
 struct PSInput {
 	float4 svpos:SV_POSITION;
 	float3 pos:POSITION;
 	float3 norm:NORMAL;
-	float2 uv:TECOORD;
-	float2 toon:TECOORD;
-	float3 col:COLOR;
 	float3 tan:TANGENT;
 	float3 bin:BINORMAL;
+	float2 uv:TECOORD;
+	float3 col:COLOR0;
 };
 
 // ディレクションライト用の定数バッファ
-cbuffer DirectionLightCb : register(b0)
+cbuffer DirectionLightCb : register(b1)
 {
 	float3 ligDirection;	//ライトの方向
 	float3 ligColor;		//ライトのカラー
 }
 
-cbuffer BaseCBuffer : register(b1) {
+cbuffer BaseCBuffer : register(b0) {
 	matrix AntiViewportM;//4x4ビューポート逆行列
 	matrix ProjectionM;//4x4プロジェクション行列
 	float4x3 ViewM;//4x3(ビュー行列)
@@ -27,6 +44,7 @@ cbuffer BaseCBuffer : register(b1) {
 	float		MulSpecularColor;						// スペキュラカラー値に乗算する値( スペキュラ無効処理で使用 )
 	float		Padding;//詰め物(無視)
 }
+
 SamplerState sam:register(s0);
 sampler Toon:register(s1);
 Texture2D<float4> tex:register(t0);
@@ -37,8 +55,10 @@ float4 main(PSInput input) : SV_TARGET
 {
 	// ↓色が変わるだけでテクスチャ関係なし
 	//return float4(0.0f, 1.0f, 1.0f, 1.0f);
+	//return float4(0,0,1,1);
 	// ↓テクスチャを貼り付けるだけ
-	return tex.Sample(sam,input.uv);
+	//return float4(input.uv,1,1);
+	return tex.Sample(sam,float2(input.uv.xy));
 
 	// トゥーンシェーダを使った描画
 	//float4 color = tex.Sample(sam,input.uv);

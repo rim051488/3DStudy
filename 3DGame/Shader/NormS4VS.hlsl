@@ -105,6 +105,7 @@ cbuffer cbD3D11_CONST_BUFFER_VS_LOCALWORLDMATRIX	: register(b3)
 VSOutput main(VertexInput input)
 {
 	VSOutput output;
+	float4 pos = float4(input.pos, 1);
 	float4 ILocalWorldMatrix[3];
 	// 複数のフレームのブレンド行列の作成
 	ILocalWorldMatrix[0] = g_LocalWorldMatrix.Matrix[input.BlendIndices0.x + 0] * input.BlendWeight0.x;
@@ -138,9 +139,9 @@ VSOutput main(VertexInput input)
 
 	// ローカル座標をワールド座標に変換
 	float4 IWorldPos;
-	IWorldPos.x = dot(input.pos, ILocalWorldMatrix[0]);
-	IWorldPos.y = dot(input.pos, ILocalWorldMatrix[1]);
-	IWorldPos.z = dot(input.pos, ILocalWorldMatrix[2]);
+	IWorldPos.x = dot(pos, ILocalWorldMatrix[0]);
+	IWorldPos.y = dot(pos, ILocalWorldMatrix[1]);
+	IWorldPos.z = dot(pos, ILocalWorldMatrix[2]);
 	IWorldPos.w = 1.0f;
 	// ワールド座標をビュー座標に変換
 	float4 IViewPos;

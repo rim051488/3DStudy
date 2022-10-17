@@ -1,12 +1,22 @@
+//struct PSInput {
+//	float4 svpos:SV_POSITION;
+//	float3 pos:POSITION;
+//	float3 norm:NORMAL;
+//	float2 uv:TECOORD;
+//	float2 toon:TECOORD;
+//	float3 col:COLOR;
+//	float3 tan:TANGENT;
+//	float3 bin:BINORMAL;
+//};
+
 struct PSInput {
 	float4 svpos:SV_POSITION;
 	float3 pos:POSITION;
 	float3 norm:NORMAL;
-	float2 uv:TECOORD;
-	float2 toon:TECOORD;
-	float3 col:COLOR;
 	float3 tan:TANGENT;
 	float3 bin:BINORMAL;
+	float2 uv:TECOORD;
+	float3 col:COLOR0;
 };
 
 SamplerState sam:register(s0);
