@@ -119,6 +119,10 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/tex.pso Shader/UseNormNoMesh/Tex.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/vs.vso Shader/UseNormNoMesh/DrawVS.hlsl</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -137,6 +141,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/tex.pso Shader/UseNormNoMesh/Tex.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/vs.vso Shader/UseNormNoMesh/DrawVS.hlsl</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common\Debug.cpp" />
