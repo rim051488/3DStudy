@@ -28,9 +28,9 @@ bool Player::Init(void)
     // Phong用のシェーダ
     //ps = LoadPixelShader("Phong.pso");
 
-    //vs = LoadVertexShader("s.vso");
+    vs = LoadVertexShader("s.vso");
     //vs = LoadVertexShader("ns4.vso");
-    vs = LoadVertexShader("Shader/usns.vso");
+    //vs = LoadVertexShader("Shader/usns.vso");
     //vs = LoadVertexShader("nnss.vso");
 
     // ライトは斜め上からあたっている
@@ -44,6 +44,7 @@ bool Player::Init(void)
     directionLight_.color = Vector3{ 1.0f,1.0f,1.0f };
     // カメラの目線
     directionLight_.eyePos = {1000.0f,500.0f,1.0f};
+
     // カメラのセットアップ
     cPos_ = { 0,100,0 };
     cTarget_ = { 0,100,0 };
@@ -51,10 +52,10 @@ bool Player::Init(void)
     // 定数バッファの確保
     cbuff = CreateShaderConstantBuffer(sizeof(DirectionLight) * 4);
     direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
-    model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
+    //model_handl = MV1LoadModel("./Resource/Model/sphere.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/player_model.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/mc.mv1");
-    //model_handl = MV1LoadModel("./Resource/Model/OM01.mv1");
+    model_handl = MV1LoadModel("./Resource/Model/miku.mv1");
     //model_handl = MV1LoadModel("./Resource/Model/ki.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_handl, VGet(pos_.x, pos_.y, pos_.z));

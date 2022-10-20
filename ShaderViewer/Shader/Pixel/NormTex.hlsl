@@ -1,29 +1,12 @@
-//struct PSInput {
-//	//float4 svpos:SV_POSITION;
-//	//float3 pos:POSITION;
-//	//float3 norm:NORMAL;
-//	//float2 uv:TECOORD;
-//	//float2 toon:TECOORD;
-//	//float3 col:COLOR;
-//	//float3 tan:TANGENT;
-//	//float3 bin:BINORMAL;
-//	float4 Diffuse         : COLOR0;		// ディフューズカラー
-//	float4 Specular        : COLOR1;		// スペキュラカラー
-//	float2 uv    : TEXCOORD0;	// xy:テクスチャ座標 zw:サブテクスチャ座標
-//	float3 VPosition       : TEXCOORD1;	// 頂点座標から視線へのベクトル( ビュー空間 )
-//	float3 VNormal         : TEXCOORD2;	// 法線( ビュー空間 )
-//	float3 VTan            : TEXCOORD3;    // 接線( ビュー空間 )
-//	float3 VBin            : TEXCOORD4;    // 従法線( ビュー空間 )
-//};
-
 struct PSInput {
 	float4 svpos:SV_POSITION;
-	float3 pos:POSITION;
+	float4 pos:POSITION;
 	float3 norm:NORMAL;
+	float2 uv:TECOORD;
+	float4 diff:COLOR0;
+	float4 spec:COLOR1;
 	float3 tan:TANGENT;
 	float3 bin:BINORMAL;
-	float2 uv:TECOORD;
-	float3 col:COLOR0;
 };
 
 // ディレクションライト用の定数バッファ

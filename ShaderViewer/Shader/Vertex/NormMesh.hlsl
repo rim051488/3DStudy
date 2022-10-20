@@ -23,18 +23,19 @@ cbuffer BaseCBuffer : register(b1) {
 
 struct VSOutput {
 	float4 svpos:SV_POSITION;
-	float3 pos:POSITION;
+	float4 pos:POSITION;
 	float3 norm:NORMAL;
+	float2 uv:TECOORD;
+	float4 diff:COLOR0;
+	float4 spec:COLOR1;
 	float3 tan:TANGENT;
 	float3 bin:BINORMAL;
-	float2 uv:TECOORD;
-	float3 col:COLOR0;
 };
 
 VSOutput main(VertexInput input)
 {
 	VSOutput output;
-	float4 pos = float4(input.pos, 1);
+	float4 pos = float4(input.pos.xyz, 1);
 
 	pos.xyz = mul(pos, localM);//ÉèÅ[ÉãÉh
 	output.pos = pos;
@@ -52,6 +53,5 @@ VSOutput main(VertexInput input)
 	output.norm = normalize(norm);
 	output.tan = normalize(tan);
 	output.bin = normalize(bin);
-	output.col = input.diffuse.rgb;
 	return output;
 }

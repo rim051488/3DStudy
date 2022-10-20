@@ -120,8 +120,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/tex.pso Shader/UseNormNoMesh/Tex.hlsl
-fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/vs.vso Shader/UseNormNoMesh/DrawVS.hlsl</Command>
+      <Command>fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Pixel/Tex.pso Shader/Pixel/Tex.hlsl
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Pixel/Lambert.pso Shader/Pixel/Lambert.hlsl
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Pixel/NormTex.pso Shader/Pixel/NormTex.hlsl
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Pixel/NormLambert.pso Shader/Pixel/NormLambert.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/Mesh4.vso Shader/Vertex/Mesh4.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/NormMesh.vso Shader/Vertex/NormMesh.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/NormMesh4.vso Shader/Vertex/NormMesh4.hlsl</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -42,23 +42,30 @@ private:
     void DrawGameEnd(float delta);
 
     void Relese(void);
-
+    // ライトのセットアップ
+    void LightSetUp(void);
+    // シェーダのセットアップ
+    void ShaderSetUp(int model);
+    // 軸の描画
+    void DrawAxis(void);
+    void DrawFilde(void);
     // モデル描画
-    int model_handl;
+    int model_;
     // 回転とポジション
-    float angle;
-    float x, y, z;
+    float angle_;
+    Vector3 pos_;
+    // カメラの回転とポジション
+    Vector3 cPos_;
+    Vector3 cRot_;
+    Vector3 cAngle_;
     // シェーダ用
-    int ps, vs;
+    int lam,tex, vs;
     int toonMap_;
     int tlbertType;
     // ディレクション
     DirectionLight directionLight_;
-    // スポットライト
-    SpotLight spotLight_;
     // 定数バッファの確保用変数
     int cbuff;
-    Vector3* direction_;
-    Vector3* color_;
+    DirectionLight* direction_;
 };
 
