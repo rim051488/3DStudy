@@ -49,8 +49,8 @@ bool GameScene::InitGame(void)
     direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
     // ÉÇÉfÉãÇÃï`âÊèÄîı
     //model_ = MV1LoadModel("./Resource/Model/sphere.mv1");
-    //model_ = MV1LoadModel("./Resource/Model/player_model.mv1");
-    model_ = MV1LoadModel("./Resource/Model/miku.mv1");
+    model_ = MV1LoadModel("./Resource/Model/player_model.mv1");
+    //model_ = MV1LoadModel("./Resource/Model/miku.mv1");
     //model_ = MV1LoadModel("./Resource/Model/OM01.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_, VGet(pos_.x, pos_.y, pos_.z));
@@ -94,11 +94,15 @@ uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
     {
         SetUsePixelShader(lam);
     }
+    if (CheckHitKey(MOUSE_INPUT_3))
+    {
+        SetUsePixelShader(toon);
+    }
     MATRIX Rot = MMult(MGetRotX(cRot_.x), MGetRotY(cRot_.y));
     VECTOR offset = VTransform(VGet(0, 100, -150), Rot);
     cPos_ = { (cAngle_.x + offset.x),(cAngle_.y + offset.y),(cAngle_.z + offset.z) };
     MV1SetRotationXYZ(model_, VGet(0, angle_, 0));
-    //MV1SetScale(model_, VGet(2, 2, 2));
+    //MV1SetScale(model_, VGet(8, 8, 8));
     DrawOwnScreen(delta);
     return ownScene;
 }
@@ -144,7 +148,7 @@ void GameScene::DrawGame(float delta)
     MV1SetUseOrigShader(false);
     DrawFilde();
     DrawAxis();
-    ScreenFlip();
+    //ScreenFlip();
 }
 
 void GameScene::DrawGameEnd(float delta)
@@ -199,11 +203,13 @@ void GameScene::ShaderSetUp(int model)
     {
         tex = LoadPixelShader("Shader/Pixel/Tex.pso");
         lam = LoadPixelShader("Shader/Pixel/Lambert.pso");
+        toon = LoadPixelShader("Shader/Pixel/Toon.pso");
     }
     else
     {
         tex = LoadPixelShader("Shader/Pixel/NormTex.pso");
         lam = LoadPixelShader("Shader/Pixel/NormLambert.pso");
+        toon = LoadPixelShader("Shader/Pixel/NormToon.pso");
     }
     SetUseVertexShader(vs);
     SetUsePixelShader(tex);
@@ -247,4 +253,5 @@ void GameScene::DrawFilde(void)
             0x00ff00
         );
     }
+
 }
