@@ -60,7 +60,7 @@ private:
     Vector3 cRot_;
     Vector3 cAngle_;
     // シェーダ用
-    int lam,tex,toon, vs;
+    int toon,lam,tex, vs;
     int toonMap_;
     int tlbertType;
     // ディレクション

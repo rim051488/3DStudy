@@ -51,9 +51,6 @@ bool GameScene::InitGame(void)
     
     // ÉÇÉfÉãÇÃï`âÊèÄîı
     //model_ = MV1LoadModel("./Resource/Model/sphere.mv1");
-    //model_ = MV1LoadModel("./Resource/Model/player_model.mv1");
-    //model_ = MV1LoadModel("./Resource/Model/Stage.mv1");
-    model_ = MV1LoadModel("./Resource/Model/OM01.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_, VGet(pos_.x, pos_.y, pos_.z));
     ShaderSetUp(model_);
@@ -165,7 +162,7 @@ void GameScene::DrawGame(float delta)
     MV1SetUseOrigShader(false);
     DrawFilde();
     DrawAxis();
-    ScreenFlip();
+    //ScreenFlip();
 }
 
 void GameScene::DrawGameEnd(float delta)
@@ -223,6 +220,7 @@ void GameScene::ShaderSetUp(int model)
         tex = LoadPixelShader("Shader/Pixel/k.pso");
         //lam = LoadPixelShader("Shader/Pixel/Lambert.pso");
         //toon = LoadPixelShader("Shader/Pixel/Toon.pso");
+        toon = LoadPixelShader("Shader/Pixel/Toon.pso");
     }
     else
     {
@@ -272,4 +270,5 @@ void GameScene::DrawFilde(void)
             0x00ff00
         );
     }
+
 }
