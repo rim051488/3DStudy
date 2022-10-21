@@ -51,15 +51,16 @@ private:
     void DrawFilde(void);
     // モデル描画
     int model_;
-    // 回転とポジション
+    // 回転とポジションとサイズ
     float angle_;
     Vector3 pos_;
+    Vector3 size_;
     // カメラの回転とポジション
     Vector3 cPos_;
     Vector3 cRot_;
     Vector3 cAngle_;
     // シェーダ用
-    int lam,tex, vs;
+    int lam,tex,toon, vs;
     int toonMap_;
     int tlbertType;
     // ディレクション

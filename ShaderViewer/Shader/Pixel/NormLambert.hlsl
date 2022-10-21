@@ -13,7 +13,7 @@ SamplerState sam:register(s0);
 Texture2D<float4> tex:register(t0);
 
 // ディレクションライト用の定数バッファ
-cbuffer DirectionLightCb : register(b0)
+cbuffer DirectionLightCb : register(b1)
 {
 	float3 ligDirection;	//ライトの方向
 	float3 ligColor;		//ライトのカラー

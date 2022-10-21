@@ -68,6 +68,11 @@ constexpr T Dot(const Vector2Tmp<T>& lVec, const Vector2Tmp<T>& rVec)
 	return lVec.x * rVec.x + lVec.y * rVec.y;
 }
 
+template<ValueC T>
+constexpr T Dot(const Vector3Tmp<T>& lVec, const Vector3Tmp<T>& rVec)
+{
+	return lVec.x * rVec.x + lVec.y * rVec.y + lVec.z + rVec.z;
+}
 
 /// <summary>
 /// äOêœ(Vector2óp)
@@ -122,6 +127,9 @@ constexpr T Rad2Deg(const T& rad)
 float GetNormalizedAngle(float angle, float valMin = 0.0f, float valMax = pi2<float>);
 
 double GetNormalizedAngle(double angle, double valMin = 0.0f, double valMax = pi2<double>);
+
+int DirNearAroundRad(float from, float to);
+float RadIn2PI(double rad);
 	
 //
 constexpr float Clamp(float val, float minVal, float maxVal)

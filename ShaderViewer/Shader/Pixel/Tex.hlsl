@@ -26,6 +26,15 @@ cbuffer BaseCBuffer : register(b0) {
 	float		Padding;//詰め物(無視)
 }
 
+struct MaterialBuffer
+{
+	float4 diff;			// ディフューズカラー
+	float4 spec;			// スペキュラカラー
+	float4 ambi;			// エミッシブ + アンビエント + グローバルアンビエント
+	float power;			// スペキュラの強さ
+	float3 pad;				// パディング
+};
+
 SamplerState sam:register(s0);
 sampler Toon:register(s1);
 Texture2D<float4> tex:register(t0);
@@ -41,24 +50,4 @@ float4 main(PSInput input) : SV_TARGET
 	//return float4(input.uv,1,1);
 	return tex.Sample(sam,float2(input.uv.xy));
 
-	// トゥーンシェーダを使った描画
-	//float4 color = tex.Sample(sam,input.uv);
-	//// ハーフランバート拡散照明によるライティング計算
-	//float p = saturate(dot(input.norm * -1.0f, ligDirection));
-	//p = p * 0.5f + 0.5f;
-	//p = saturate(p * p);
-	//p = clamp(p, 0.0f, 0.99f);
-	////return toon.Sample(sam, float2(p, 0.0f));
-	//// 計算結果よりトゥーンシェーダのテクスチャからフェッチ
-	//float4 Col = toon.Sample(sam, float2(p, 0.0f));
-	//return color *= Col;
-
-	//float4 color;
-	//float p = dot(input.norm * -1.0f, ligDirection);
-	//p = p * 0.5f + 0.5f;
-	//p = p * p;
-
-	//float4 Col = toon.Sample(Toon, float2(p, 0.0f));
-	//color = Col * tex.Sample(sam, input.uv);
-	//return color;
 }
