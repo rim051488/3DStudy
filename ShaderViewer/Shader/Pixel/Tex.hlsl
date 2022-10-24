@@ -124,15 +124,20 @@ PSOutput main(PSInput input) : SV_TARGET
 	// ディフューズカラーとスペキュラカラーの蓄積値を初期化
 	float3 TotalDiffuse = float3(0.0f, 0.0f, 0.0f);
 	float3 TotalSpecular = float3(0.0f, 0.0f, 0.0f);
+	TotalDiffuse += g_Common.material.diffuse.xyz;
+	float3 TextureSpecular = tex.Sample(sam, input.uv);
+	// スペキュラカラー蓄積値 += Temp * ライトのスペキュラカラー
+	TotalSpecular += TextureSpecular;
+
 
 	// 出力カラー計算 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
 	// TotalDiffuse = ライトディフューズカラー蓄積値 + ( マテリアルのアンビエントカラーとグローバルアンビエントカラーを乗算したものとマテリアルエミッシブカラーを加算したもの )
 	TotalDiffuse += g_Common.material.ambient_Emissive.xyz;
 	// SpecularColor = マテリアルのスペキュラカラー
-	float3 SpecularColor = g_Common.material.specular.xyz;
+	float3 SpecularColor = TotalSpecular * g_Common.material.specular.xyz;
 	// 出力カラー = テクスチャカラー
 	float4 TextureDiffuseColor = tex.Sample(sam, input.uv);
-	output.color0.rgb = TextureDiffuseColor.rgb;
+	output.color0.rgb = TextureDiffuseColor.rgb * TotalDiffuse + SpecularColor;
 	// アルファ値 = テクスチャアルファ * マテリアルのディフューズアルファ * 不透明度
 	output.color0.a = TextureDiffuseColor.a * g_Common.material.diffuse.a * g_Base.factorColor.a;
 	// 出力カラー計算 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )

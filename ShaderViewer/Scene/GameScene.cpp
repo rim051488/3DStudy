@@ -51,8 +51,8 @@ bool GameScene::InitGame(void)
     
     // ÉÇÉfÉãÇÃï`âÊèÄîı
     //model_ = MV1LoadModel("./Resource/Model/sphere.mv1");
-    //model_ = MV1LoadModel("./Resource/Model/me.mv1");
-    model_ = MV1LoadModel("./Resource/Model/Stage.mv1");
+    model_ = MV1LoadModel("./Resource/Model/OM01.mv1");
+    //model_ = MV1LoadModel("./Resource/Model/Stage.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_, VGet(pos_.x, pos_.y, pos_.z));
     ShaderSetUp(model_);
