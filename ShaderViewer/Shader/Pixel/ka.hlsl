@@ -110,38 +110,29 @@ Texture2D<float4> toon:register(t1);
 PS_OUTPUT main(PS_INPUT PSInput)
 {
 	PS_OUTPUT PSOutput;
-	// 接線・従法線・法線を正規化
+	// 法線を正規化
 	float3 VNrm = normalize(PSInput.norm);
-	////バグっているTanとBinの色を出力
-	//↓本来の処理(現在TanとBinがバグっているため不使用)
-	// 頂点座標から視点へのベクトルを接底空間に投影した後正規化して保存
-	float3 TempF3;
-	TempF3.x = dot(1.0f, -PSInput.pos.xyz);
-	TempF3.y = dot(1.0f, -PSInput.pos.xyz);
-	TempF3.z = dot(VNrm, -PSInput.pos.xyz);
-	float3 V_to_Eye = normalize(TempF3);
+	float3 V_to_Eye = normalize(-PSInput.pos);
 	// 法線の 0～1 の値を -1.0～1.0 に変換する
-	float3 Normal = (tex.Sample(sam, PSInput.uv.xy) - float3(1.0f, 1.0f, 1.0f)) * 2.0f;
+	// バンプマップがないので
+	float3 Normal = VNrm;
+
 	// ディフューズカラーとスペキュラカラーの蓄積値を初期化
 	float3 TotalDiffuse = float3(0.0f, 0.0f, 0.0f);
 	float3 TotalSpecular = float3(0.0f, 0.0f, 0.0f);
 
 	// ディレクショナルライトの処理 +++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
 	// ライト方向ベクトルの計算
-	TempF3 = g_Common.light[0].direction;
-	// ライトのベクトルを接地空間に変換
 	float3 lLightDir;
-	lLightDir.x = dot(1.0f, TempF3);
-	lLightDir.y = dot(1.0f, TempF3);
-	lLightDir.z = dot(VNrm, TempF3);
+	lLightDir = g_Common.light[0].direction;
+	// ライトのベクトルを接地空間に変換
 	// DiffuseAngleGen = ディフューズ角度減衰率計算(減衰無し)
 	float DiffuseAngleGen = saturate(dot(Normal, -lLightDir));
 	// ディフューズカラー蓄積値 += ライトのディフューズカラー * マテリアルのディフューズカラー * ディフューズカラー角度減衰率 + ライトのアンビエントカラーとマテリアルのアンビエントカラーを乗算したもの 
 	TotalDiffuse += g_Common.light[0].diffuse * g_Common.material.diffuse.xyz * DiffuseAngleGen + g_Common.light[0].ambient;
 	// スペキュラカラー計算
 	// ハーフベクトルの計算
-	TempF3 = normalize(V_to_Eye - lLightDir);
-	// Temp = pow( max( 0.0f, N * H ), g_Common.Material.Power )
+	float3 TempF3 = normalize(V_to_Eye - lLightDir);
 	float4 Temp = pow(max(0.0f, dot(Normal, TempF3)), g_Common.material.power);
 	float3 TextureSpecular = tex.Sample(sam, PSInput.uv);
 	// スペキュラカラー蓄積値 += Temp * ライトのスペキュラカラー

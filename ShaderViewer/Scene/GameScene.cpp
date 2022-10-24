@@ -44,14 +44,15 @@ bool GameScene::InitGame(void)
     size_ = Vector3{ 1.0f,1.0f,1.0f };
     
     // ライトのセットアップ
-    //LightSetUp();
+    LightSetUp();
     //// 定数バッファの確保(理解できるまでdxlib内のライトを使うこと)
     //cbuff = CreateShaderConstantBuffer(sizeof(DirectionLight) * 4);
     //direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
     
     // モデルの描画準備
     //model_ = MV1LoadModel("./Resource/Model/sphere.mv1");
-    model_ = MV1LoadModel("./Resource/Model/miku.mv1");
+    //model_ = MV1LoadModel("./Resource/Model/me.mv1");
+    model_ = MV1LoadModel("./Resource/Model/Stage.mv1");
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_, VGet(pos_.x, pos_.y, pos_.z));
     ShaderSetUp(model_);
@@ -163,7 +164,7 @@ void GameScene::DrawGame(float delta)
     MV1SetUseOrigShader(false);
     DrawFilde();
     DrawAxis();
-    //ScreenFlip();
+    ScreenFlip();
 }
 
 void GameScene::DrawGameEnd(float delta)
@@ -176,17 +177,21 @@ void GameScene::Relese(void)
 
 void GameScene::LightSetUp(void)
 {
-    // ライトは斜め上からあたっている
-    directionLight_.direction = Vector3{ -1.0f,-1.0f,1.0f };
-    // 正規化する
-    directionLight_.direction.Normalized();
-    // 詰め物
-    directionLight_.pading = 0.0f;
-    directionLight_.pading1 = 0.0f;
-    // ライトのカラーは白色
-    directionLight_.color = Vector3{ 1.0f,1.0f,1.0f };
-    // カメラの目線
-    directionLight_.eyePos = { 1000.0f,500.0f,1.0f };
+    //// ライトは斜め上からあたっている
+    //directionLight_.direction = Vector3{ -1.0f,-1.0f,1.0f };
+    //// 正規化する
+    //directionLight_.direction.Normalized();
+    //// 詰め物
+    //directionLight_.pading = 0.0f;
+    //directionLight_.pading1 = 0.0f;
+    //// ライトのカラーは白色
+    //directionLight_.color = Vector3{ 1.0f,1.0f,1.0f };
+    //// カメラの目線
+    //directionLight_.eyePos = { 1000.0f,500.0f,1.0f };
+    SetLightDirection(VGet(1.f, -1.f, 1.f));
+    SetLightDifColor(GetColorF(1.f, 1.f, 1.f, 1.f));
+    SetLightSpcColor(GetColorF(1.f, 1.f, 1.f, 1.f));
+    SetLightAmbColor(GetColorF(0.5f, 0.5f, 0.5f, 1.f));
 }
 
 void GameScene::ShaderSetUp(int model)
@@ -202,8 +207,7 @@ void GameScene::ShaderSetUp(int model)
         vs = LoadVertexShader("Shader/Vertex/Mesh.vso");
     }
     else if (tlbertType == DX_MV1_VERTEX_TYPE_4FRAME) {
-        //vs = LoadVertexShader("Shader/Vertex/Mesh4.vso");
-        vs = LoadVertexShader("Shader/Vertex/k.vso");
+        vs = LoadVertexShader("Shader/Vertex/Mesh4.vso");
     }
     else if (tlbertType == DX_MV1_VERTEX_TYPE_8FRAME) {
     }
@@ -218,10 +222,9 @@ void GameScene::ShaderSetUp(int model)
     }
     if (tlbertType < 3)
     {
-        tex = LoadPixelShader("Shader/Pixel/k.pso");
-        //lam = LoadPixelShader("Shader/Pixel/Lambert.pso");
+        tex = LoadPixelShader("Shader/Pixel/tex.pso");
+        lam = LoadPixelShader("Shader/Pixel/k.pso");
         //toon = LoadPixelShader("Shader/Pixel/Toon.pso");
-        toon = LoadPixelShader("Shader/Pixel/Toon.pso");
     }
     else
     {

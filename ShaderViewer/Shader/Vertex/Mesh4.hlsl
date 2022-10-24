@@ -13,7 +13,7 @@ struct VSOutput {
 	float4 svpos:SV_POSITION;
 	float3 pos:POSITION;
 	float3 norm:NORMAL;
-	float2 uv:TECOORD;
+	float4 uv:TECOORD;
 	float4 diff:COLOR0;
 	float4 spec:COLOR1;
 };

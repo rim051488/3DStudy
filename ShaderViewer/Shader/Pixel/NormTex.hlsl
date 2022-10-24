@@ -1,12 +1,19 @@
+// 入力
 struct PSInput {
 	float4 svpos:SV_POSITION;
 	float4 pos:POSITION;
 	float3 norm:NORMAL;
-	float2 uv:TECOORD;
+	float4 uv:TECOORD;
 	float4 diff:COLOR0;
 	float4 spec:COLOR1;
 	float3 tan:TANGENT;
 	float3 bin:BINORMAL;
+};
+
+// ピクセルシェーダーの出力
+struct PS_OUTPUT
+{
+	float4 color0           : SV_TARGET0;	// 色
 };
 
 // ディレクションライト用の定数バッファ
@@ -37,7 +44,7 @@ Texture2D<float4> toon:register(t1);
 float4 main(PSInput input) : SV_TARGET
 {
 	// ↓色が変わるだけでテクスチャ関係なし
-	//return float4(0.0f, 1.0f, 1.0f, 1.0f);
+	return float4(input.tan, 1.0f);
 	//return float4(0,0,1,1);
 	// ↓テクスチャを貼り付けるだけ
 	//return float4(input.uv,1,1);
