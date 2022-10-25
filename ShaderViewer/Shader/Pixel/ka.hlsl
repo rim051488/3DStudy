@@ -102,9 +102,13 @@ cbuffer cbD3D11_CONST_BUFFER_PS_BASE				: register(b1)
 
 //Texture
 SamplerState sam:register(s0);
-sampler Toon:register(s1);
+SamplerState normmap:register(s1);
+SamplerState specmap:register(s2);
+sampler Toon:register(s3);
 Texture2D<float4> tex:register(t0);
-Texture2D<float4> toon:register(t1);
+Texture2D<float4> normtex:register(t1);
+Texture2D<float4> spectex:register(t2);
+Texture2D<float4> toon:register(t3);
 
 // main関数
 PS_OUTPUT main(PS_INPUT PSInput)
@@ -114,9 +118,11 @@ PS_OUTPUT main(PS_INPUT PSInput)
 	float3 VNrm = normalize(PSInput.norm);
 	float3 V_to_Eye = normalize(-PSInput.pos);
 	// 法線の 0～1 の値を -1.0～1.0 に変換する
-	// バンプマップがないので
+	// バンプマップがある場合
+	//float3 Normal = (normtex.Sample(normmap, PSInput.uv.xy) - float3(0.5f, 0.5f, 0.5f)) * 2.0f;
+	
+	// ない場合
 	float3 Normal = VNrm;
-
 	// ディフューズカラーとスペキュラカラーの蓄積値を初期化
 	float3 TotalDiffuse = float3(0.0f, 0.0f, 0.0f);
 	float3 TotalSpecular = float3(0.0f, 0.0f, 0.0f);
@@ -134,9 +140,14 @@ PS_OUTPUT main(PS_INPUT PSInput)
 	// ハーフベクトルの計算
 	float3 TempF3 = normalize(V_to_Eye - lLightDir);
 	float4 Temp = pow(max(0.0f, dot(Normal, TempF3)), g_Common.material.power);
-	float3 TextureSpecular = tex.Sample(sam, PSInput.uv);
+
+	// バンプマップがある場合
+	//float3 TextureSpecular = spectex.Sample(specmap, PSInput.uv);
 	// スペキュラカラー蓄積値 += Temp * ライトのスペキュラカラー
-	TotalSpecular += Temp * g_Common.light[0].specular * TextureSpecular;
+	//TotalSpecular += Temp * g_Common.light[0].specular * TextureSpecular;
+
+	// スペキュラカラー蓄積値 += Temp * ライトのスペキュラカラー
+	TotalSpecular += Temp * g_Common.light[0].specular;
 	// ディレクショナルライトの処理 +++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
 
 	// 出力カラー計算 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
@@ -144,11 +155,15 @@ PS_OUTPUT main(PS_INPUT PSInput)
 	TotalDiffuse += g_Common.material.ambient_Emissive.xyz;
 	// SpecularColor = ライトのスペキュラカラー蓄積値 * マテリアルのスペキュラカラー
 	float3 SpecularColor = TotalSpecular * g_Common.material.specular.xyz;
-	// 出力カラー = TotalDiffuse * テクスチャカラー + SpecularColor
-	float4 TextureDiffuseColor = tex.Sample(sam, PSInput.uv);
-	PSOutput.color0.rgb = TextureDiffuseColor.rgb * TotalDiffuse + SpecularColor;
-	// アルファ値 = テクスチャアルファ * マテリアルのディフューズアルファ * 不透明度
-	PSOutput.color0.a = TextureDiffuseColor.a * g_Common.material.diffuse.a * g_Base.factorColor.a;
+	// テクスチャとマテリアルありの場合
+	//// 出力カラー = TotalDiffuse * テクスチャカラー + SpecularColor
+	//float4 TextureDiffuseColor = tex.Sample(sam, PSInput.uv);
+	//PSOutput.color0.rgb = TextureDiffuseColor.rgb * TotalDiffuse + SpecularColor;
+	
+	// 出力カラー = TotalDiffuse * SpecularColor
+	PSOutput.color0.rgb = TotalDiffuse + SpecularColor;
+	// アルファ値 = マテリアルのディフューズアルファ * 不透明度
+	PSOutput.color0.a = g_Common.material.diffuse.a * g_Base.factorColor.a;
 	// 出力カラー計算 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
 	//PSOutput.color0.rgb = PSInput.tan;
 	return PSOutput;

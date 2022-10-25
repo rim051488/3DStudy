@@ -105,10 +105,13 @@ cbuffer cbD3D11_CONST_BUFFER_PS_BASE				: register(b1)
 };
 
 SamplerState sam:register(s0);
-sampler Toon:register(s1);
+SamplerState normmap:register(s1);
+SamplerState specmap:register(s2);
+sampler Toon:register(s3);
 Texture2D<float4> tex:register(t0);
-Texture2D<float4> toon:register(t1);
-
+Texture2D<float4> normtex:register(t1);
+Texture2D<float4> spectex:register(t2);
+Texture2D<float4> toon:register(t3);
 
 PSOutput main(PSInput input) : SV_TARGET
 {
@@ -119,13 +122,14 @@ PSOutput main(PSInput input) : SV_TARGET
 	float3 V_to_Eye = normalize(-input.pos);
 	// 法線の 0～1 の値を -1.0～1.0 に変換する
 	// バンプマップがないので
-	float3 Normal = normalize(input.norm);
+	//float3 Normal = normalize(input.norm);
+	float3 Normal = (normtex.Sample(normmap, input.uv.xy) - float3(0.5f, 0.5f, 0.5f)) * 2.0f;
 
 	// ディフューズカラーとスペキュラカラーの蓄積値を初期化
 	float3 TotalDiffuse = float3(0.0f, 0.0f, 0.0f);
 	float3 TotalSpecular = float3(0.0f, 0.0f, 0.0f);
 	TotalDiffuse += g_Common.material.diffuse.xyz;
-	float3 TextureSpecular = tex.Sample(sam, input.uv);
+	float3 TextureSpecular = spectex.Sample(specmap, input.uv);
 	// スペキュラカラー蓄積値 += Temp * ライトのスペキュラカラー
 	TotalSpecular += TextureSpecular;
 

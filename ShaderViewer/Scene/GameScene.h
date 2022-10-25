@@ -46,11 +46,18 @@ private:
     void LightSetUp(void);
     // シェーダのセットアップ
     void ShaderSetUp(int model);
+    // 影用の震度記録画像の準備
+    void SetupDepthImage(void);
+    // 影用の震度記録画像を使った影を落とす処理も含めたモデルの描画
+    void DrawModelWithDepthShadow(void);
+    // 描画処理
+    void Render_Process();
     // 軸の描画
     void DrawAxis(void);
     void DrawFilde(void);
     // モデル描画
     int model_;
+    int stage_;
     // 回転とポジションとサイズ
     float angle_;
     Vector3 pos_;
@@ -63,7 +70,19 @@ private:
     int toon,lam,tex, vs;
     int toonMap_;
     int tlbertType;
+    // 影表現用
+    VECTOR Lightdir_;
+    VECTOR Lightpos_;
+    VECTOR Lighttarget_;
+    int DepthBufferGraphHandle_;
+    int ps_[2];
+    int vs_[4];
+    // カメラのビュー行列と射影行列
+    MATRIX LightCamera_ViewMatrix;
+    MATRIX LightCamera_ProjectionMatrix;
+
     // ディレクション
+    VECTOR LightDirecion_;
     DirectionLight directionLight_;
     // 定数バッファの確保用変数
     int cbuff;

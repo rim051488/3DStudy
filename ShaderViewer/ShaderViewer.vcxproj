@@ -134,7 +134,14 @@ fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Pixel/NormToon.pso Shader/Pixel/Norm
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/Mesh.vso Shader/Vertex/Mesh.hlsl
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/Mesh4.vso Shader/Vertex/Mesh4.hlsl
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/NormMesh.vso Shader/Vertex/NormMesh.hlsl
-fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/NormMesh4.vso Shader/Vertex/NormMesh4.hlsl</Command>
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Vertex/NormMesh4.vso Shader/Vertex/NormMesh4.hlsl
+
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/stage1VS.vso Shader/Shadow/stage1VS.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/stage2VS.vso Shader/Shadow/stage2VS.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/model1VS.vso Shader/Shadow/model1VS.hlsl
+fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/model2VS.vso Shader/Shadow/model2VS.hlsl
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/stage1PS.pso Shader/Shadow/stage1PS.hlsl
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/stage2PS.pso Shader/Shadow/stage2PS.hlsl</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -173,6 +180,7 @@ fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/vs.vso Shader/UseNormN
     <ClCompile Include="Scene\BaseScene.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Scene\SceneMng.cpp" />
+    <ClCompile Include="Shader\Render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Debug.h" />
@@ -195,6 +203,7 @@ fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/vs.vso Shader/UseNormN
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Scene\SceneMng.h" />
+    <ClInclude Include="Shader\Render.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
