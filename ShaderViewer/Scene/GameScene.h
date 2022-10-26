@@ -5,6 +5,12 @@
 #include "BaseScene.h"
 #include "../common/Light.h"
 
+struct LIGHT_MATRIX
+{
+    MATRIX view;
+    MATRIX projection;
+};
+
 class GameScene :
     public BaseScene
 {
@@ -80,6 +86,9 @@ private:
     // カメラのビュー行列と射影行列
     MATRIX LightCamera_ViewMatrix;
     MATRIX LightCamera_ProjectionMatrix;
+    // 影表現用の変数
+    LIGHT_MATRIX lightMat_;
+    int cbufferVS, cbufferPS;
 
     // ディレクション
     VECTOR LightDirecion_;

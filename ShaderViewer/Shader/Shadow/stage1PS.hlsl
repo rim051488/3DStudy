@@ -2,6 +2,7 @@
 struct PSInput
 {
 	float4 pos       : TEXCOORD0 ;        // 座標( ビュー空間 )
+	float4 svpos        : SV_POSITION;	// 座標( プロジェクション空間 )
 } ;
 
 // ピクセルシェーダーの出力

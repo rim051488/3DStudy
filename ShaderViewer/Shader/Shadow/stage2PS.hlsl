@@ -34,6 +34,10 @@ cbuffer cbD3D11_CONST_BUFFER_PS_BASE				: register( b1 )
 	DX_D3D11_PS_CONST_BUFFER_BASE		g_Base ;
 } ;
 
+cbuffer DEPTH_CONST:register(b5)
+{
+	float4 test;
+};
 
 SamplerState sam            : register( s0 ) ;		// ディフューズマップテクスチャ
 Texture2D    tex            : register( t0 ) ;		// ディフューズマップテクスチャ

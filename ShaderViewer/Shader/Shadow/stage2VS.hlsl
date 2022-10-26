@@ -125,11 +125,16 @@ cbuffer cbD3D11_CONST_BUFFER_VS_OTHERMATRIX			: register( b2 )
 	DX_D3D11_VS_CONST_BUFFER_OTHERMATRIX		g_OtherMatrix ;
 } ;
 
-cbuffer cbLIGHTCAMERA_MATRIX						: register( b4 )
-{
-	LIGHTCAMERA_MATRIX							g_LightMatrix ;
-} ;
+//cbuffer cbLIGHTCAMERA_MATRIX						: register( b4 )
+//{
+//	LIGHTCAMERA_MATRIX							g_LightMatrix ;
+//} ;
 
+cbuffer LIGHT_VIEW		: register(b4)
+{
+	matrix g_lightView;
+	matrix g_lightProjection;
+};
 
 // main関数
 VSOutput main( VSInput input )
@@ -248,10 +253,12 @@ VSOutput main( VSInput input )
 	// 深度影用のライトから見た射影座標を算出 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
 
 	// ワールド座標をライトのビュー座標に変換
-	lLViewPosition = mul( g_LightMatrix.ViewMatrix, lWorldPosition ) ;
-
+	lLViewPosition = mul(g_lightView, lWorldPosition ) ;
+	//lLViewPosition = mul( g_LightMatrix.ViewMatrix, lWorldPosition ) ;
+	
 	// ライトのビュー座標をライトの射影座標に変換
-	output.lpos = mul( g_LightMatrix.ProjectionMatrix, lLViewPosition ) ;
+	output.lpos = mul(g_lightProjection, lLViewPosition ) ;
+	//output.lpos = mul( g_LightMatrix.ProjectionMatrix, lLViewPosition ) ;
 
 	// Ｚ値だけはライトのビュー座標にする
 	output.lpos.z = lLViewPosition.z ;

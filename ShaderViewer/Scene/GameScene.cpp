@@ -41,8 +41,11 @@ bool GameScene::InitGame(void)
     // モデルの座標と角度の初期化
     pos_ = Vector3(0, 0, 0);
     angle_ = 0.0f;
-    size_ = Vector3{ 1.0f,1.0f,1.0f };
-    
+    size_ = Vector3{ 6.0f,6.0f,6.0f };
+    // モデルのセット
+    stage_ = MV1LoadModel("./Resource/Model/Stage.mv1");
+    model_ = MV1LoadModel("./Resource/Model/OM01.mv1");
+    SetUseDirect3DVersion(DX_DIRECT3D_11);
     // ライトのセットアップ
     LightSetUp();
     //// 定数バッファの確保(理解できるまでdxlib内のライトを使うこと)
@@ -54,25 +57,26 @@ bool GameScene::InitGame(void)
     vs_[1] = LoadVertexShader("Shader/Shadow/model1VS.vso");
     vs_[2] = LoadVertexShader("Shader/Shadow/stage2VS.vso");
     vs_[3] = LoadVertexShader("Shader/Shadow/model2VS.vso");
-    stage_ = MV1LoadModel("./Resource/Model/Stage.mv1");
     // 作成する画像のフォーマットを浮動小数点型で１チャンネル、１６ビットにする
     SetDrawValidFloatTypeGraphCreateFlag(true);
     SetCreateDrawValidGraphChannelNum(1);
     SetCreateGraphColorBitDepth(16);
-    DepthBufferGraphHandle_ = MakeScreen(screenSize_.x, screenSize_.y,false);
+    DepthBufferGraphHandle_ = MakeScreen(screenSize_.x, screenSize_.y ,false);
     // 設定を元に戻す
     SetDrawValidFloatTypeGraphCreateFlag(false);
     SetCreateDrawValidGraphChannelNum(4);
     SetCreateGraphColorBitDepth(32);
-    // モデルの描画準備
-    //model_ = MV1LoadModel("./Resource/Model/sphere.mv1");
-    //model_ = MV1LoadModel("./Resource/Model/player_model.mv1");
-    model_ = MV1LoadModel("./Resource/Model/OM01.mv1");
+    // トーン用の画像をセット
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_, VGet(pos_.x, pos_.y, pos_.z));
     MV1SetPosition(stage_, VGet(0.0f, 0.0f, 0.0f));
     MV1SetScale(stage_, VGet(0.5f, 0.5f, 0.5f));
+    MV1SetScale(model_, VGet(size_.x, size_.y, size_.z));
     ShaderSetUp(model_);
+    lightMat_.projection = MGetIdent();
+    lightMat_.view = MGetIdent();
+    cbufferVS = CreateShaderConstantBuffer(sizeof(LIGHT_MATRIX));
+    cbufferPS = CreateShaderConstantBuffer(sizeof(FLOAT4));
     return true;
 }
 
@@ -269,25 +273,36 @@ void GameScene::SetupDepthImage(void)
 {
     // 描画先を影用深度記録画像にする
     SetDrawScreen(DepthBufferGraphHandle_);
+    //SetDrawScreen(screenID_);
+    //ClsDrawScreen();
     // 影用深度記録画像を真っ白にする
     SetBackgroundColor(255, 255, 255);
     ClearDrawScreen();
     SetBackgroundColor(0, 0, 0);
     // カメラのタイプを正射影タイプセット、描画範囲も指定
-    SetupCamera_Ortho(13250.0f);
+    SetupCamera_Ortho(13000);
     // 描画する奥行範囲をセット
     SetCameraNearFar(1.0f, 13000.0f);
     // カメラの向きはライトの向き
     LightDirecion_ = GetLightDirection();
     // カメラの位置と注視点はステージ全体が見渡せる位置
-    Lighttarget_.x = 3620.0f;
-    Lighttarget_.y = 0.0f;
-    Lighttarget_.z = 3830.0f;
-    Lightpos_ = VAdd(Lighttarget_, VScale(LightDirecion_, -12400));
-    SetCameraPositionAndTarget_UpVecY(Lightpos_, Lighttarget_);
+    //Lighttarget_.x = cAngle_.x;
+    //Lighttarget_.y = cAngle_.y;
+    //Lighttarget_.z = cAngle_.z;
+    //Lightpos_ = VAdd(Lighttarget_, VScale(LightDirecion_, -10));
+    //SetCameraPositionAndTarget_UpVecY(Lightpos_, Lighttarget_);
+    
+	//Lighttarget_.x = 3620.0f;
+    //Lighttarget_.y = 0.0f;
+    //Lighttarget_.z = 3830.0f;
+    //Lightpos_ = VAdd(Lighttarget_, VScale(LightDirecion_, -12400));
+    //SetCameraPositionAndTarget_UpVecY(Lightpos_, Lighttarget_);
+    auto light = GetLightDirection();
+    auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -16000));
+    SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
     // 設定したカメラのビュー行列と射影表列を取得しておく
-    LightCamera_ViewMatrix = GetCameraViewMatrix();
-    LightCamera_ProjectionMatrix = GetCameraProjectionMatrix();
+    //LightCamera_ViewMatrix = GetCameraViewMatrix();
+    //LightCamera_ProjectionMatrix = GetCameraProjectionMatrix();
     MV1SetUseOrigShader(true);
     // 深度値への描画用のピクセルシェーダをセット
     SetUsePixelShader(ps_[0]);
@@ -300,23 +315,39 @@ void GameScene::SetupDepthImage(void)
     MV1DrawModel(model_);
     MV1SetUseOrigShader(false);
     // 描画先を裏画面に戻す
-    SetDrawScreen(DX_SCREEN_BACK);
+    SetDrawScreen(screenID_);
 }
 
 void GameScene::DrawModelWithDepthShadow(void)
 {
-    SetDrawScreen(screenID_);
     ClsDrawScreen();
-
     // カメラの設定を行う
     SetCameraPositionAndTarget_UpVecY(VGet(cPos_.x, cPos_.y, cPos_.z), VGet(cAngle_.x, cAngle_.y, cAngle_.z));
-    
+    //auto light = VScale(GetLightDirection(), 2);
+    //auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -400));
+    //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
+
     MV1SetUseOrigShader(true);
     // 深度記録画面を使った影＋ディレクショナルライト１つ描画用のピクセルシェーダをセット
     SetUsePixelShader(ps_[1]);
     // 影用深度記録画像を描画した時のカメラのビュー行列と射影行列を定数に設定する
-    SetVSConstFMtx(43, LightCamera_ViewMatrix);
-    SetVSConstFMtx(47, LightCamera_ProjectionMatrix);
+    //SetVSConstFMtx(43, LightCamera_ViewMatrix);
+    //SetVSConstFMtx(47, LightCamera_ProjectionMatrix);
+
+    LIGHT_MATRIX* p = reinterpret_cast<LIGHT_MATRIX*>(GetBufferShaderConstantBuffer(cbufferVS));
+    //p->projection = GetCameraViewMatrix();
+    p->projection = lightMat_.projection;
+    //p->view = GetCameraProjectionMatrix();
+    p->view = lightMat_.view; 
+    UpdateShaderConstantBuffer(cbufferVS);
+    SetShaderConstantBuffer(cbufferVS, DX_SHADERTYPE_VERTEX, 4);
+    FLOAT4* f = (FLOAT4*)GetBufferShaderConstantBuffer(cbufferPS);
+    f->x = 60;
+    f->y = 0;
+    f->z = 0;
+    f->w = 1;
+    UpdateShaderConstantBuffer(cbufferPS);
+    SetShaderConstantBuffer(cbufferPS, DX_SHADERTYPE_PIXEL, 4);
 
     // 影用深度記録画像をテクスチャ１にセット
     SetUseTextureToShader(1, DepthBufferGraphHandle_);

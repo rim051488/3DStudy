@@ -102,6 +102,13 @@ struct DX_D3D11_VS_CONST_BUFFER_OTHERMATRIX
 	float4		TextureMatrix[ 3 ][ 2 ] ;								// テクスチャ座標操作用行列
 } ;
 
+// 影用の深度記録画像を作成した際のカメラのビュー行列と射影行列
+struct LIGHTCAMERA_MATRIX
+{
+	MATRIX		ViewMatrix;
+	MATRIX		ProjectionMatrix;
+};
+
 // スキニングメッシュ用の　ローカル　→　ワールド行列
 struct DX_D3D11_VS_CONST_BUFFER_LOCALWORLDMATRIX
 {
@@ -132,12 +139,17 @@ cbuffer cbD3D11_CONST_BUFFER_VS_LOCALWORLDMATRIX	: register( b3 )
 	DX_D3D11_VS_CONST_BUFFER_LOCALWORLDMATRIX	g_LocalWorldMatrix ;
 } ;
 
-cbuffer cbLIGHTCAMERA_MATRIX						: register( b4 )
-{
-	matrix		g_LightViewMatrix ;			// ライトのワールド　→　ビュー行列
-	matrix		g_LightProjectionMatrix ;	// ライトのビュー　　→　射影行列
-} ;
+//cbuffer cbLIGHTCAMERA_MATRIX						: register( b4 )
+//{
+//	LIGHTCAMERA_MATRIX							g_LightMatrix;
+//} ;
 
+
+cbuffer LIGHT_VIEW		: register(b4)
+{
+	matrix g_lightView;
+	matrix g_lightProjection;
+};
 
 // main関数
 VSOutput main( VSInput input )
@@ -271,11 +283,13 @@ VSOutput main( VSInput input )
 	// 深度影用のライトから見た射影座標を算出 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
 
 	// ワールド座標をライトのビュー座標に変換
-	lLViewPosition = mul( g_LightViewMatrix, lWorldPosition ) ;
-
+	lLViewPosition = mul(g_lightView, lWorldPosition ) ;
+	//lLViewPosition = mul(g_LightMatrix.ViewMatrix, lWorldPosition ) ;
+	
 	// ライトのビュー座標をライトの射影座標に変換
-	output.lpos = mul( g_LightProjectionMatrix, lLViewPosition ) ;
-
+	output.lpos = mul(g_lightProjection, lLViewPosition ) ;
+	//output.lpos = mul(g_LightMatrix.ProjectionMatrix, lLViewPosition ) ;
+	
 	// Ｚ値だけはライトのビュー座標にする
 	output.lpos.z = lLViewPosition.z ;
 
