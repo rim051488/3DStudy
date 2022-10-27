@@ -281,9 +281,9 @@ void GameScene::SetupDepthImage(void)
     ClearDrawScreen();
     SetBackgroundColor(0, 0, 0);
     // カメラのタイプを正射影タイプセット、描画範囲も指定
-    //SetupCamera_Ortho(100);
+    //SetupCamera_Ortho(1000);
     // 描画する奥行範囲をセット
-    //SetCameraNearFar(1.0f, 13000.0f);
+    //SetCameraNearFar(0.0f, 13000.0f);
    
     // カメラの向きはライトの向き
     LightDirecion_ = GetLightDirection();
@@ -291,8 +291,10 @@ void GameScene::SetupDepthImage(void)
     auto light = GetLightDirection();
     //auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -500));
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
-    auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -500));
+    auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -1000));
     SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
+    //auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -500));
+    //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
 
 
     // 設定したカメラのビュー行列と射影表列を取得しておく
