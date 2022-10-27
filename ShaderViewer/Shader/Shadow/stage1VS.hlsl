@@ -12,7 +12,8 @@ struct VSInput
 // 頂点シェーダーの出力
 struct VSOutput
 {
-	float4 pos       : TEXCOORD0 ;        // 座標( 射影空間 )
+	float4 pos       : POSITION0;        // 座標(ワールド)
+	float4 vpos : POSITION1;			// 座標(ビュー)
 	float4 vspos        : SV_POSITION ;	// 座標( プロジェクション空間 )
 } ;
 
@@ -82,17 +83,10 @@ VSOutput main(VSInput input )
 	output.vspos.z = dot( lViewPosition, g_Base.ProjectionMatrix[ 2 ] ) ;
 	output.vspos.w = dot( lViewPosition, g_Base.ProjectionMatrix[ 3 ] ) ;
 
-	// 頂点座標変換 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
-
-
-	// 出力パラメータセット ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
-
-	// ビュー座標をテクスチャ座標として出力する
+	// ワールド座標をセット
 	output.pos = lViewPosition ;
-
-	// 出力パラメータセット ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
+	// ビュー座標をセット
+	output.vpos = output.vspos;
 
 	// 出力パラメータを返す
 	return output;

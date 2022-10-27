@@ -12,10 +12,10 @@ struct VSInput
 // 頂点シェーダーの出力
 struct VSOutput
 {
-	float4 diff         : COLOR0 ;		// ディフューズカラー
-	float4 spec        : COLOR1 ;		// スペキュラカラー
-	float4 uv0      : TEXCOORD0 ;	// テクスチャ座標
-	float4 lpos      : TEXCOORD1 ;    // ライトからみた座標( ライトの射影空間 )
+	float4 diff         : COLOR0;       // ディフューズカラー
+	float4 spec        : COLOR1;       // スペキュラカラー
+	float4 uv0      : TEXCOORD0;    // テクスチャ座標
+	float4 lpos: POSITION;    // ライトビュースクリーン空間でのピクセルの座標
 	float4 pos        : SV_POSITION ;	// 座標( プロジェクション空間 )
 } ;
 
@@ -150,9 +150,6 @@ VSOutput main( VSInput input )
 	float4 lLightLitParam ;
 	float4 lLightLitDest ;
 
-
-	// 頂点座標変換 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
-
 	// ローカル座標のセット
 	lLocalPosition.xyz = input.pos;
 	lLocalPosition.w = 1.0f ;
@@ -175,14 +172,6 @@ VSOutput main( VSInput input )
 	output.pos.z = dot( lViewPosition, g_Base.ProjectionMatrix[ 2 ] ) ;
 	output.pos.w = dot( lViewPosition, g_Base.ProjectionMatrix[ 3 ] ) ;
 
-	// 頂点座標変換 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
-
-
-	// ライトの処理 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
-
-	// 法線をビュー空間の角度に変換 =========================================( 開始 )
-
 	// ローカルベクトルをワールドベクトルに変換
 	lWorldNrm.x = dot(input.norm, g_Base.LocalWorldMatrix[ 0 ].xyz ) ;
 	lWorldNrm.y = dot(input.norm, g_Base.LocalWorldMatrix[ 1 ].xyz ) ;
@@ -195,11 +184,6 @@ VSOutput main( VSInput input )
 
 	// 法線を正規化
 	lViewNrm = normalize( lViewNrm ) ;
-
-	// 法線をビュー空間の角度に変換 =========================================( 終了 )
-
-
-	// ライトディフューズカラーとライトスペキュラカラーの角度減衰計算 =======( 開始 )
 
 	// 法線とライトの逆方向ベクトルとの内積を lLightLitParam.x にセット
 	lLightLitParam.x = dot( lViewNrm, -g_Common.Light[ 0 ].Direction ) ;
@@ -215,14 +199,6 @@ VSOutput main( VSInput input )
 
 	// ライトパラメータ計算
 	lLightLitDest = lit( lLightLitParam.x, lLightLitParam.y, lLightLitParam.w ) ;
-
-	// ライトディフューズカラーとライトスペキュラカラーの角度減衰計算 =======( 終了 )
-
-	// ライトの処理 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
-
-
-	// 出力パラメータセット ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
 
 	// ディフューズカラー =
 	//            ディフューズ角度減衰計算結果 *
@@ -246,12 +222,6 @@ VSOutput main( VSInput input )
 	output.uv0.x = dot(input.uv0, g_OtherMatrix.TextureMatrix[ 0 ][ 0 ] ) ;
 	output.uv0.y = dot(input.uv0, g_OtherMatrix.TextureMatrix[ 0 ][ 1 ] ) ;
 
-	// 出力パラメータセット ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
-
-
-	// 深度影用のライトから見た射影座標を算出 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
-
 	// ワールド座標をライトのビュー座標に変換
 	lLViewPosition = mul(g_lightView, lWorldPosition ) ;
 	//lLViewPosition = mul( g_LightMatrix.ViewMatrix, lWorldPosition ) ;
@@ -262,9 +232,6 @@ VSOutput main( VSInput input )
 
 	// Ｚ値だけはライトのビュー座標にする
 	output.lpos.z = lLViewPosition.z ;
-
-	// 深度影用のライトから見た射影座標を算出 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
 
 	// 出力パラメータを返す
 	return output ;

@@ -140,8 +140,8 @@ fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/stage1VS.vso Shader/Shadow/st
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/stage2VS.vso Shader/Shadow/stage2VS.hlsl
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/model1VS.vso Shader/Shadow/model1VS.hlsl
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/model2VS.vso Shader/Shadow/model2VS.hlsl
-fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/stage1PS.pso Shader/Shadow/stage1PS.hlsl
-fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/stage2PS.pso Shader/Shadow/stage2PS.hlsl</Command>
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/shadowMap.pso Shader/Shadow/shadowMap.hlsl
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/setShadowMap.pso Shader/Shadow/setShadowMap.hlsl</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -14,7 +14,8 @@ struct VSInput
 // 頂点シェーダーの出力
 struct VSOutput
 {
-	float4 pos       : TEXCOORD0 ;        // 座標( 射影空間 )
+	float4 pos       : POSITION0 ;        // 座標( ワールド )
+	float4 vpos       : POSITION1;        // 座標( ヴュー空間 )
 	float4 svpos        : SV_POSITION ;	// 座標( プロジェクション空間 )
 } ;
 
@@ -96,9 +97,6 @@ VSOutput main(VSInput input )
 	lLocalWorldMatrix[ 1 ] += g_LocalWorldMatrix.Matrix[input.BlendIndices0.w + 1 ] * input.BlendWeight0.w;
 	lLocalWorldMatrix[ 2 ] += g_LocalWorldMatrix.Matrix[input.BlendIndices0.w + 2 ] * input.BlendWeight0.w;
 
-
-	// 頂点座標変換 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
-
 	// ローカル座標をワールド座標に変換
 	lWorldPosition.x = dot(pos, lLocalWorldMatrix[ 0 ] ) ;
 	lWorldPosition.y = dot(pos, lLocalWorldMatrix[ 1 ] ) ;
@@ -116,18 +114,10 @@ VSOutput main(VSInput input )
 	output.svpos.y = dot( lViewPosition, g_Base.ProjectionMatrix[ 1 ] ) ;
 	output.svpos.z = dot( lViewPosition, g_Base.ProjectionMatrix[ 2 ] ) ;
 	output.svpos.w = dot( lViewPosition, g_Base.ProjectionMatrix[ 3 ] ) ;
-
-	// 頂点座標変換 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
-
-
-	// 出力パラメータセット ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 開始 )
-
-	// ビュー座標をテクスチャ座標として出力する
+	// カメラの情報も取得できるように
+	output.vpos = output.svpos;
+	// 座標をセット
 	output.pos = lViewPosition ;
-
-	// 出力パラメータセット ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++( 終了 )
-
 
 	// 出力パラメータを返す
 	return output;
