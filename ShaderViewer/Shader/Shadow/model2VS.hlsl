@@ -254,11 +254,10 @@ VSOutput main( VSInput input )
 
 	// ワールド座標をライトのビュー座標に変換
 	lLViewPosition = mul(g_lightView, lWorldPosition ) ;
-	//output.lpos = mul(g_lightView, lWorldPosition ) ;
 	//lLViewPosition = mul(g_LightMatrix.ViewMatrix, lWorldPosition ) ;
 	
 	// ライトのビュー座標をライトの射影座標に変換
-	//output.lpos = mul(g_lightProjection, lLViewPosition ) ;
+	output.lpos = mul(g_lightProjection, lLViewPosition ) ;
 	//output.lpos = mul(g_LightMatrix.ProjectionMatrix, lLViewPosition ) ;
 	
 	// Ｚ値だけはライトのビュー座標にする
