@@ -15,7 +15,7 @@ struct VSOutput
 	float4 diff         : COLOR0;       // ディフューズカラー
 	float4 spec        : COLOR1;       // スペキュラカラー
 	float4 uv0      : TEXCOORD0;    // テクスチャ座標
-	float4 lpos: POSITION;    // ライトビュースクリーン空間でのピクセルの座標
+	float4 lpos: TEXCOORD1;    // ライトビュースクリーン空間でのピクセルの座標
 	float4 pos        : SV_POSITION ;	// 座標( プロジェクション空間 )
 } ;
 
@@ -132,8 +132,8 @@ cbuffer cbD3D11_CONST_BUFFER_VS_OTHERMATRIX			: register( b2 )
 
 cbuffer LIGHT_VIEW		: register(b4)
 {
-	matrix g_lightView;
-	matrix g_lightProjection;
+	float4x4 g_lightView;
+	float4x4 g_lightProjection;
 };
 
 // main関数

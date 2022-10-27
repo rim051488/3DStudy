@@ -60,8 +60,8 @@ bool GameScene::InitGame(void)
     vs_[3] = LoadVertexShader("Shader/Shadow/model2VS.vso");
     // 作成する画像のフォーマットを浮動小数点型で１チャンネル、１６ビットにする
     SetDrawValidFloatTypeGraphCreateFlag(true);
-    SetCreateDrawValidGraphChannelNum(1);
-    SetCreateGraphColorBitDepth(16);
+    SetCreateDrawValidGraphChannelNum(4);
+    SetCreateGraphColorBitDepth(32);
     DepthBufferGraphHandle_ = MakeScreen(screenSize_.x, screenSize_.y, false);
     // 設定を元に戻す
     SetDrawValidFloatTypeGraphCreateFlag(false);
@@ -78,7 +78,7 @@ bool GameScene::InitGame(void)
     lightMat_.projection = MGetIdent();
     lightMat_.view = MGetIdent();
     cbufferVS = CreateShaderConstantBuffer(sizeof(LIGHT_MATRIX));
-    cbufferPS = CreateShaderConstantBuffer(sizeof(FLOAT4));
+    //cbufferPS = CreateShaderConstantBuffer(sizeof(FLOAT4));
     return true;
 }
 
@@ -281,7 +281,7 @@ void GameScene::SetupDepthImage(void)
     ClearDrawScreen();
     SetBackgroundColor(0, 0, 0);
     // カメラのタイプを正射影タイプセット、描画範囲も指定
-    //SetupCamera_Ortho(1000);
+    //SetupCamera_Ortho(100);
     // 描画する奥行範囲をセット
     //SetCameraNearFar(1.0f, 13000.0f);
    
@@ -289,8 +289,11 @@ void GameScene::SetupDepthImage(void)
     LightDirecion_ = GetLightDirection();
 
     auto light = GetLightDirection();
-    auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -500));
-    SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
+    //auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -500));
+    //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
+    auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -500));
+    SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
+
 
     // 設定したカメラのビュー行列と射影表列を取得しておく
     //LightCamera_ViewMatrix = GetCameraViewMatrix();
@@ -340,13 +343,13 @@ void GameScene::DrawModelWithDepthShadow(void)
 
     UpdateShaderConstantBuffer(cbufferVS);
     SetShaderConstantBuffer(cbufferVS, DX_SHADERTYPE_VERTEX, 4);
-    FLOAT4* f = (FLOAT4*)GetBufferShaderConstantBuffer(cbufferPS);
-    f->x = 60;
-    f->y = 0;
-    f->z = 0;
-    f->w = 1;
-    UpdateShaderConstantBuffer(cbufferPS);
-    SetShaderConstantBuffer(cbufferPS, DX_SHADERTYPE_PIXEL, 4);
+    //FLOAT4* f = (FLOAT4*)GetBufferShaderConstantBuffer(cbufferPS);
+    //f->x = 60;
+    //f->y = 0;
+    //f->z = 0;
+    //f->w = 1;
+    //UpdateShaderConstantBuffer(cbufferPS);
+    //SetShaderConstantBuffer(cbufferPS, DX_SHADERTYPE_PIXEL, 4);
 
     // 影用深度記録画像をテクスチャ１にセット
     SetUseTextureToShader(1, DepthBufferGraphHandle_);

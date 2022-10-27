@@ -17,7 +17,7 @@ struct VSOutput
 	float4 diff         : COLOR0 ;
 	float4 spec        : COLOR1 ;
 	float4 uv0      : TEXCOORD0 ;
-	float4 lpos      : POSITION;    // ライトからみた座標( ライトの射影空間 )
+	float4 lpos      : TEXCOORD1;    // ライトからみた座標( ライトの射影空間 )
 	float4 pos        : SV_POSITION ;	// 座標( プロジェクション空間 )
 } ;
 
@@ -147,8 +147,8 @@ cbuffer cbD3D11_CONST_BUFFER_VS_LOCALWORLDMATRIX	: register( b3 )
 
 cbuffer LIGHT_VIEW		: register(b4)
 {
-	matrix g_lightView;
-	matrix g_lightProjection;
+	float4x4 g_lightView;
+	float4x4 g_lightProjection;
 };
 
 // main関数
@@ -257,7 +257,7 @@ VSOutput main( VSInput input )
 	//lLViewPosition = mul(g_LightMatrix.ViewMatrix, lWorldPosition ) ;
 	
 	// ライトのビュー座標をライトの射影座標に変換
-	output.lpos = mul(g_lightProjection, lLViewPosition ) ;
+	//output.lpos = mul(g_lightProjection, lLViewPosition ) ;
 	//output.lpos = mul(g_LightMatrix.ProjectionMatrix, lLViewPosition ) ;
 	
 	// Ｚ値だけはライトのビュー座標にする
