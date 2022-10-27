@@ -143,6 +143,10 @@ fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/model2VS.vso Shader/Shadow/mo
 fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/shadowMap.pso Shader/Shadow/shadowMap.hlsl
 fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/setShadowMap.pso Shader/Shadow/setShadowMap.hlsl</Command>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

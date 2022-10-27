@@ -261,7 +261,7 @@ VSOutput main( VSInput input )
 	//output.lpos = mul(g_LightMatrix.ProjectionMatrix, lLViewPosition ) ;
 	
 	// Ｚ値だけはライトのビュー座標にする
-	output.lpos.z = lLViewPosition.z ;
+	//output.lpos.z = lLViewPosition.z ;
 
 	// 出力パラメータを返す
 	return output;

@@ -67,42 +67,42 @@ PSOutput main( PSInput input )
 	output.Color0 = DefaultOutput;
 	//return output;
 
-	// //深度テクスチャの座標を算出
-	// //PSInput.LPPosition.xy は -1.0f ～ 1.0f の値なので、これを 0.0f ～ 1.0f の値にする
-	//DepthTexCoord.x = (input.lpos.x + 1.0f ) / 2.0f;
+	//深度テクスチャの座標を算出
+	//PSInput.LPPosition.xy は -1.0f ～ 1.0f の値なので、これを 0.0f ～ 1.0f の値にする
+	DepthTexCoord.x = (input.lpos.x + 1.0f ) / 2.0f;
 
-	// //yは更に上下反転
-	//DepthTexCoord.y = 1.0f - (input.lpos.y + 1.0f ) / 2.0f;
+	//yは更に上下反転
+	DepthTexCoord.y = 1.0f - (input.lpos.y + 1.0f ) / 2.0f;
 
-	// //深度バッファテクスチャから深度を取得
-	//TextureDepth = depthtex.Sample(depth, DepthTexCoord );
+	//深度バッファテクスチャから深度を取得
+	TextureDepth = depthtex.Sample(depth, DepthTexCoord );
 
-	// //テクスチャに記録されている深度( +補正値 )よりＺ値が大きかったら奥にあるということで輝度を半分にする
-	//if(input.lpos.z > TextureDepth + 60.0f )
-	//{
-	//	DefaultOutput.rgb *= 0.5f;
-	//}
-
-	// //出力カラーをセット
-	//output.Color0 = DefaultOutput;
-
-	// //出力パラメータを返す
-	//return output;
-
-	//ライトビュースクリーン空間からUV座標空間に変換している
-	float2 shadowMapUV = input.lpos.xy / input.lpos.w;
-	shadowMapUV *= float2(0.5f, -0.5f);
-	shadowMapUV += 0.5f;
-	// UV座標を使ってシャドウマップから影情報をサンプリングする
-	float3 shadowMap = 1.0f;
-	if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f &&
-		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f)
+	//テクスチャに記録されている深度( +補正値 )よりＺ値が大きかったら奥にあるということで輝度を半分にする
+	if(input.lpos.z > TextureDepth + 60.0f )
 	{
-		shadowMap = depthtex.Sample(depth, shadowMapUV);
+		DefaultOutput.rgb *= 0.5f;
 	}
-	// テクスチャにシャドウマップからサンプリングした情報を掛け算する
-	output.Color0.xyz = shadowMap.xyz * DefaultOutput.xyz;
+
+	//出力カラーをセット
+	output.Color0 = DefaultOutput;
+
+	//出力パラメータを返す
 	return output;
+
+	////ライトビュースクリーン空間からUV座標空間に変換している
+	//float2 shadowMapUV = input.lpos.xy / input.lpos.w;
+	//shadowMapUV *= float2(0.5f, -0.5f);
+	//shadowMapUV += 0.5f;
+	// //UV座標を使ってシャドウマップから影情報をサンプリングする
+	//float3 shadowMap = 1.0f;
+	//if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f &&
+	//	shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f)
+	//{
+	//	shadowMap = depthtex.Sample(depth, shadowMapUV);
+	//}
+	// //テクスチャにシャドウマップからサンプリングした情報を掛け算する
+	//output.Color0.xyz = shadowMap.xyz * DefaultOutput.xyz;
+	//return output;
 }
 
 

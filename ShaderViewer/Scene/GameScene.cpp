@@ -62,7 +62,7 @@ bool GameScene::InitGame(void)
     SetDrawValidFloatTypeGraphCreateFlag(true);
     SetCreateDrawValidGraphChannelNum(1);
     SetCreateGraphColorBitDepth(16);
-    DepthBufferGraphHandle_ = MakeScreen(screenSize_.x, screenSize_.y ,false);
+    DepthBufferGraphHandle_ = MakeScreen(screenSize_.x, screenSize_.y, false);
     // 設定を元に戻す
     SetDrawValidFloatTypeGraphCreateFlag(false);
     SetCreateDrawValidGraphChannelNum(4);
@@ -302,7 +302,7 @@ void GameScene::SetupDepthImage(void)
     // 深度記録画像への剛体メッシュ描画用の頂点シェーダをセット
     SetUseVertexShader(vs_[0]);
     //// ステージを描画
-    //MV1DrawModel(stage_);
+    MV1DrawModel(stage_);
     // 深度地記録画像へのスキニングメッシュ描画用の頂点シェーダをセット
     SetUseVertexShader(vs_[1]);
     MV1DrawModel(model_);
