@@ -17,7 +17,7 @@ struct VSOutput
 	float4 diff         : COLOR0 ;
 	float4 spec        : COLOR1 ;
 	float4 uv0      : TEXCOORD0 ;
-	float4 lpos      : TEXCOORD1;    // ライトからみた座標( ライトの射影空間 )
+	float4 lpos      : POSITION;    // ライトからみた座標( ライトの射影空間 )
 	float4 pos        : SV_POSITION ;	// 座標( プロジェクション空間 )
 } ;
 
@@ -157,7 +157,6 @@ VSOutput main( VSInput input )
 	VSOutput output ;
 	float4 lWorldPosition ;
 	float4 lViewPosition ;
-	float4 lLViewPosition ;
 	float3 lWorldNrm ;
 	float3 lViewNrm ;
 	float3 lLightHalfVec ;
@@ -252,12 +251,13 @@ VSOutput main( VSInput input )
 	output.uv0.x = dot(input.uv0, g_OtherMatrix.TextureMatrix[ 0 ][ 0 ] ) ;
 	output.uv0.y = dot(input.uv0, g_OtherMatrix.TextureMatrix[ 0 ][ 1 ] ) ;
 
+	float4 LViewPos;
 	// ワールド座標をライトのビュー座標に変換
-	lLViewPosition = mul(g_lightView, lWorldPosition ) ;
+	LViewPos = mul(g_lightView, lWorldPosition) ;
 	//lLViewPosition = mul(g_LightMatrix.ViewMatrix, lWorldPosition ) ;
 	
 	// ライトのビュー座標をライトの射影座標に変換
-	//output.lpos = mul(g_lightProjection, lLViewPosition ) ;
+	output.lpos = mul(g_lightProjection, LViewPos) ;
 	//output.lpos = mul(g_LightMatrix.ProjectionMatrix, lLViewPosition ) ;
 	
 	// Ｚ値だけはライトのビュー座標にする

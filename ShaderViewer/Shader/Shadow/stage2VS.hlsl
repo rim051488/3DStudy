@@ -15,7 +15,7 @@ struct VSOutput
 	float4 diff         : COLOR0;       // ディフューズカラー
 	float4 spec        : COLOR1;       // スペキュラカラー
 	float4 uv0      : TEXCOORD0;    // テクスチャ座標
-	float4 lpos: TEXCOORD1;    // ライトビュースクリーン空間でのピクセルの座標
+	float4 lpos: POSITION;    // ライトビュースクリーン空間でのピクセルの座標
 	float4 pos        : SV_POSITION ;	// 座標( プロジェクション空間 )
 } ;
 

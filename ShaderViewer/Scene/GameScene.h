@@ -87,7 +87,8 @@ private:
     MATRIX LightCamera_ViewMatrix;
     MATRIX LightCamera_ProjectionMatrix;
     // 影表現用の変数
-    LIGHT_MATRIX lightMat_;
+    LIGHT_MATRIX* lightMat_;
+    LIGHT_MATRIX lightM_;
     int cbufferVS, cbufferPS;
 
     // ディレクション

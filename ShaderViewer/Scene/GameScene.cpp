@@ -52,6 +52,12 @@ bool GameScene::InitGame(void)
     //// 定数バッファの確保(理解できるまでdxlib内のライトを使うこと)
     //cbuff = CreateShaderConstantBuffer(sizeof(DirectionLight) * 4);
     //direction_ = static_cast<DirectionLight*>(GetBufferShaderConstantBuffer(cbuff));
+    cbufferVS = CreateShaderConstantBuffer(sizeof(LIGHT_MATRIX)*4);
+    lightMat_ = static_cast<LIGHT_MATRIX*>(GetBufferShaderConstantBuffer(cbufferVS));
+    //cbufferPS = CreateShaderConstantBuffer(sizeof(FLOAT4));
+    lightM_.view = MGetIdent();
+    lightM_.projection = MGetIdent();
+
     ps_[0] = LoadPixelShader("Shader/Shadow/shadowMap.pso");
     ps_[1] = LoadPixelShader("Shader/Shadow/setShadowMap.pso");
     vs_[0] = LoadVertexShader("Shader/Shadow/stage1VS.vso");
@@ -60,8 +66,8 @@ bool GameScene::InitGame(void)
     vs_[3] = LoadVertexShader("Shader/Shadow/model2VS.vso");
     // 作成する画像のフォーマットを浮動小数点型で１チャンネル、１６ビットにする
     SetDrawValidFloatTypeGraphCreateFlag(true);
-    SetCreateDrawValidGraphChannelNum(4);
-    SetCreateGraphColorBitDepth(32);
+    SetCreateDrawValidGraphChannelNum(1);
+    SetCreateGraphColorBitDepth(16);
     DepthBufferGraphHandle_ = MakeScreen(screenSize_.x, screenSize_.y, false);
     // 設定を元に戻す
     SetDrawValidFloatTypeGraphCreateFlag(false);
@@ -75,10 +81,6 @@ bool GameScene::InitGame(void)
     //MV1SetScale(stage_, VGet(0.5f, 0.5f, 0.5f));
     MV1SetScale(model_, VGet(size_.x, size_.y, size_.z));
     ShaderSetUp(model_);
-    lightMat_.projection = MGetIdent();
-    lightMat_.view = MGetIdent();
-    cbufferVS = CreateShaderConstantBuffer(sizeof(LIGHT_MATRIX));
-    //cbufferPS = CreateShaderConstantBuffer(sizeof(FLOAT4));
     return true;
 }
 
@@ -88,27 +90,27 @@ uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
     controller_->Update(delta);
     if (controller_->Press(InputID::Left))
     {
-        pos_.x -= 1;
+        pos_.x -= 5;
     }
     if (controller_->Press(InputID::Right))
     {
-        pos_.x += 1;
+        pos_.x += 5;
     }
     if (controller_->Press(InputID::Up))
     {
-        pos_.z += 1;
+        pos_.z += 5;
     }
     if (controller_->Press(InputID::Down))
     {
-        pos_.z -= 1;
+        pos_.z -= 5;
     }
     if (CheckHitKey(KEY_INPUT_W))
     {
-        pos_.y += 1;
+        pos_.y += 5;
     }
     if (CheckHitKey(KEY_INPUT_S))
     {
-        pos_.y -= 1;
+        pos_.y -= 5;
     }
     if (CheckHitKey(KEY_INPUT_1))
     {
@@ -284,17 +286,17 @@ void GameScene::SetupDepthImage(void)
     //SetupCamera_Ortho(1000);
     // 描画する奥行範囲をセット
     //SetCameraNearFar(0.0f, 13000.0f);
-   
+
     // カメラの向きはライトの向き
     LightDirecion_ = GetLightDirection();
 
     auto light = GetLightDirection();
     //auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -500));
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
-    auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -1000));
-    SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
-    //auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -500));
+    //auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -1000));
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
+    auto lightPos = VAdd(VGet(-100, 600.0f, -1000.0f), VScale(light, -500));
+    SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
 
 
     // 設定したカメラのビュー行列と射影表列を取得しておく
@@ -312,13 +314,15 @@ void GameScene::SetupDepthImage(void)
     SetUseVertexShader(vs_[1]);
     MV1DrawModel(model_);
     MV1SetUseOrigShader(false);
-    // ライトの座標をもらっておく(カメラがライトの情報をもっている)
-    LIGHT_MATRIX* p = reinterpret_cast<LIGHT_MATRIX*>(GetBufferShaderConstantBuffer(cbufferVS));
-    p->projection = GetCameraViewMatrix();
-    //p->projection = lightMat_.projection;
-    p->view = GetCameraProjectionMatrix();
-    //p->view = lightMat_.view; 
-    
+    //// ライトの座標をもらっておく(カメラがライトの情報をもっている)
+    //LIGHT_MATRIX* p = reinterpret_cast<LIGHT_MATRIX*>(GetBufferShaderConstantBuffer(cbufferVS));
+    //p->projection = GetCameraViewMatrix();
+    ////p->projection = lightMat_.projection;
+    //p->view = GetCameraProjectionMatrix();
+    ////p->view = lightMat_.view; 
+    lightM_.view = GetCameraViewMatrix();
+    lightM_.projection = GetCameraProjectionMatrix();
+
     // 描画先を裏画面に戻す
     SetDrawScreen(screenID_);
 }
@@ -327,7 +331,8 @@ void GameScene::DrawModelWithDepthShadow(void)
 {
     ClsDrawScreen();
     // カメラの設定を行う
-    SetCameraPositionAndTarget_UpVecY(VGet(cPos_.x, cPos_.y, cPos_.z - 200), VGet(cAngle_.x, cAngle_.y, cAngle_.z));
+    SetCameraPositionAndTarget_UpVecY(VGet(pos_.x + cPos_.x, pos_.y + cPos_.y + 100, pos_.z + cPos_.z - 700), VGet(pos_.x, pos_.y, pos_.z));
+
     //auto light = VScale(GetLightDirection(), 2);
     //auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -400));
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
@@ -342,7 +347,7 @@ void GameScene::DrawModelWithDepthShadow(void)
     // (DirectX9じゃないと適応されない)影用深度記録画像を描画した時のカメラのビュー行列と射影行列を定数に設定する
     //SetVSConstFMtx(43, LightCamera_ViewMatrix);
     //SetVSConstFMtx(47, LightCamera_ProjectionMatrix);
-
+    lightMat_[0] = lightM_;
     UpdateShaderConstantBuffer(cbufferVS);
     SetShaderConstantBuffer(cbufferVS, DX_SHADERTYPE_VERTEX, 4);
     //FLOAT4* f = (FLOAT4*)GetBufferShaderConstantBuffer(cbufferPS);
@@ -402,13 +407,13 @@ void GameScene::DrawFilde(void)
     for (int i = -FIELD_EXTEND; i <= FIELD_EXTEND; i++)
     {
         DrawLine3D(
-            VGet((float)i * 10, 0, -200),
-            VGet((float)i * 10, 0, 200),
+            VGet((float)i * 20, 0, -400),
+            VGet((float)i * 20, 0, 400),
             0x00ff00
         );
         DrawLine3D(
-            VGet(-200, 0, (float)i * 10),
-            VGet(200, 0, (float)i * 10),
+            VGet(-400, 0, (float)i * 20),
+            VGet(400, 0, (float)i * 20),
             0x00ff00
         );
     }
