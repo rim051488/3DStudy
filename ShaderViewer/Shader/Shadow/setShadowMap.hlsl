@@ -95,7 +95,7 @@ PSOutput main( PSInput input )
 		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f)
 	{
 		float zshadowMap = depthtex.Sample(depth, shadowMapUV).r;
-		if (zlpos > zshadowMap)
+		if (zlpos > zshadowMap + 0.005f)
 		{
 			// ŽÕ’f‚³‚ê‚Ä‚¢‚é
 			output.Color0.xyz *= 0.5f;
