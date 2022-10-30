@@ -77,9 +77,6 @@ private:
     int toonMap_;
     int tlbertType;
     // ‰e•\Œ»—p
-    VECTOR Lightdir_;
-    VECTOR Lightpos_;
-    VECTOR Lighttarget_;
     int DepthBufferGraphHandle_;
     int ps_[2];
     int vs_[4];

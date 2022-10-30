@@ -295,7 +295,7 @@ void GameScene::SetupDepthImage(void)
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
     //auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -1000));
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
-    auto lightPos = VAdd(VGet(-100, 600.0f, -1000.0f), VScale(light, -500));
+    auto lightPos = VAdd(VGet(-500, 600.0f, -1000.0f), VScale(light, -500));
     SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
 
 
@@ -331,7 +331,7 @@ void GameScene::DrawModelWithDepthShadow(void)
 {
     ClsDrawScreen();
     // ÉJÉÅÉâÇÃê›íËÇçsÇ§
-    SetCameraPositionAndTarget_UpVecY(VGet(pos_.x + cPos_.x, pos_.y + cPos_.y + 100, pos_.z + cPos_.z - 700), VGet(pos_.x, pos_.y, pos_.z));
+    SetCameraPositionAndTarget_UpVecY(VGet(pos_.x + cPos_.x, pos_.y + cPos_.y + 100, pos_.z + cPos_.z - 300), VGet(pos_.x, pos_.y, pos_.z));
 
     //auto light = VScale(GetLightDirection(), 2);
     //auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -400));
