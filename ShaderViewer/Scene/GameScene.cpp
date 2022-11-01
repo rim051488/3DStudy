@@ -350,13 +350,6 @@ void GameScene::DrawModelWithDepthShadow(void)
     lightMat_[0] = lightM_;
     UpdateShaderConstantBuffer(cbufferVS);
     SetShaderConstantBuffer(cbufferVS, DX_SHADERTYPE_VERTEX, 4);
-    //FLOAT4* f = (FLOAT4*)GetBufferShaderConstantBuffer(cbufferPS);
-    //f->x = 60;
-    //f->y = 0;
-    //f->z = 0;
-    //f->w = 1;
-    //UpdateShaderConstantBuffer(cbufferPS);
-    //SetShaderConstantBuffer(cbufferPS, DX_SHADERTYPE_PIXEL, 4);
 
     // 影用深度記録画像をテクスチャ１にセット
     SetUseTextureToShader(1, DepthBufferGraphHandle_);
