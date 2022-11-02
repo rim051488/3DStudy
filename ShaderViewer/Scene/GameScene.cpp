@@ -268,7 +268,9 @@ void GameScene::ShaderSetUp(int model)
     }
     SetUseVertexShader(vs);
     SetUsePixelShader(tex);
+    SetDrawMode(DX_DRAWMODE_BILINEAR);
     SetUseTextureToShader(3, toonMap_);
+    SetDrawMode(DX_DRAWMODE_NEAREST);
     SetUseZBuffer3D(true);
     SetWriteZBuffer3D(true);
 }

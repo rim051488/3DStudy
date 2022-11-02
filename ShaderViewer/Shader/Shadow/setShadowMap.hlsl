@@ -46,10 +46,10 @@ SamplerState sam            : register( s0 ) ;		// ディフューズマップテクスチャ
 Texture2D    tex            : register( t0 ) ;		// ディフューズマップテクスチャ
 
 // ハードシャドウ
-SamplerState depth              : register( s1 ) ;		// 深度バッファテクスチャ
+//SamplerState depth              : register( s1 ) ;		// 深度バッファテクスチャ
 // ソフトシャドウ
-//SamplerComparisonState depth:register(s1);
-Texture2D    depthtex              : register( t1 ) ;		// 深度バッファテクスチャ
+SamplerComparisonState depth:register(s1);
+Texture2D    depthtex              : register(t1) ;		// 深度バッファテクスチャ
 
 // main関数
 PSOutput main( PSInput input )
@@ -72,23 +72,6 @@ PSOutput main( PSInput input )
 	output.Color0 = DefaultOutput;
 	//return output;
 
-	////深度テクスチャの座標を算出
-	////PSInput.LPPosition.xy は -1.0f ～ 1.0f の値なので、これを 0.0f ～ 1.0f の値にする
-	//DepthTexCoord.x = (input.lpos.x + 1.0f ) / 2.0f;
-	////yは更に上下反転
-	//DepthTexCoord.y = 1.0f - (input.lpos.y + 1.0f ) / 2.0f;
-	////深度バッファテクスチャから深度を取得
-	//TextureDepth = depthtex.Sample(depth, DepthTexCoord );
-	////テクスチャに記録されている深度( +補正値 )よりＺ値が大きかったら奥にあるということで輝度を半分にする
-	//if(input.lpos.z > TextureDepth + 25.0f )
-	//{
-	//	DefaultOutput.rgb *= 0.5f;
-	//}
-	////出力カラーをセット
-	//output.Color0 = DefaultOutput;
-	////出力パラメータを返す
-	//return output;
-
 	//ライトビュースクリーン空間からUV座標空間に変換している
 	float2 shadowMapUV = input.lpos.xy / input.lpos.w;
 	shadowMapUV *= float2(0.5f, -0.5f);
@@ -99,56 +82,56 @@ PSOutput main( PSInput input )
 	if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f &&
 		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f)
 	{
-		// ハードシャドウ
+		 //ハードシャドウ
 		//float zshadowMap = depthtex.Sample(depth, shadowMapUV).r;
 		//if (zlpos > zshadowMap + 0.005f)
 		//{
 		//	// 遮断されている
 		//	output.Color0.xyz *= 0.5f;
 		//}
-		
+
 		// ソフトシャドウ
-		float shadowMap_0 = depthtex.Sample(depth, shadowMapUV).r;
-		float shadowMap_1 = depthtex.Sample(depth, shadowMapUV + float2(0.5,0.0f)).r;
-		float shadowMap_2 = depthtex.Sample(depth, shadowMapUV + float2(0.5, 0.5)).r;
-		float shadowMap_3 = depthtex.Sample(depth, shadowMapUV + float2(0.0f, 0.5)).r;
+		
+		//float shadowMap_0 = depthtex.Sample(depth, shadowMapUV).r;
+		//float shadowMap_1 = depthtex.Sample(depth, shadowMapUV + float2(0.5,0.0f)).r;
+		//float shadowMap_2 = depthtex.Sample(depth, shadowMapUV + float2(0.5, 0.5)).r;
+		//float shadowMap_3 = depthtex.Sample(depth, shadowMapUV + float2(0.0f, 0.5)).r;
+		//float shadowRate = 0.0f;
+		//if (zlpos > shadowMap_0)
+		//{
+		//	// 遮蔽されているので、遮蔽率を１加算
+		//	shadowRate += 1.0f;
+		//}
+		//if (zlpos > shadowMap_1)
+		//{
+		//	// 遮蔽されているので、遮蔽率を１加算
+		//	shadowRate += 1.0f;
+		//}
+		//if (zlpos > shadowMap_2)
+		//{
+		//	// 遮蔽されているので、遮蔽率を１加算
+		//	shadowRate += 1.0f;
+		//}
+		//if (zlpos > shadowMap_3)
+		//{
+		//	// 遮蔽されているので、遮蔽率を１加算
+		//	shadowRate += 1.0f;
+		//}
+		//shadowRate /= 4.0f;
+		//float3 shadowColor = output.Color0.xyz;
+		//float3 finalColor = lerp(output.Color0.xyz, shadowColor, shadowRate);
+		//output.Color0.xyz = finalColor;
+	
+		float shadow = depthtex.SampleCmpLevelZero(
+			depth,	// 使用するサンプラーステート
+			shadowMapUV, // シャドウマップにアクセスするUV座標
+			zlpos	// 比較するZ値
+		);
 
-		float shadowRate = 0.0f;
-		if (zlpos > shadowMap_0)
-		{
-			// 遮蔽されているので、遮蔽率を１加算
-			shadowRate += 1.0f;
-		}
-		if (zlpos > shadowMap_1)
-		{
-			// 遮蔽されているので、遮蔽率を１加算
-			shadowRate += 1.0f;
-		}
-		if (zlpos > shadowMap_2)
-		{
-			// 遮蔽されているので、遮蔽率を１加算
-			shadowRate += 1.0f;
-		}
-		if (zlpos > shadowMap_3)
-		{
-			// 遮蔽されているので、遮蔽率を１加算
-			shadowRate += 1.0f;
-		}
-
-		shadowRate /= 4.0f;
-
-		float3 shadowColor = output.Color0.xyz;
-		float3 finalColor = lerp(output.Color0.xyz, shadowColor, shadowRate);
-		output.Color0.xyz = finalColor;
-		//float shadow = depthtex.SampleCmpLevelZero(
-		//	depth,	// 使用するサンプラーステート
-		//	shadowMapUV, // シャドウマップにアクセスするUV座標
-		//	zlpos	// 比較するZ値
-		//);
-		//// シャドウカラーを計算
-		//float3 shadowColor = output.Color0.xyz * 0.5f;
-		//// 遮蔽率を使って線形補間
-		//output.Color0.xyz = lerp(output.Color0.xyz, shadowColor, shadow);
+		// シャドウカラーを計算
+		float3 shadowColor = output.Color0.xyz * 0.5f;
+		// 遮蔽率を使って線形補間
+		output.Color0.xyz = lerp(output.Color0.xyz, shadowColor,  shadow);
 	}
 	return output;
 }
