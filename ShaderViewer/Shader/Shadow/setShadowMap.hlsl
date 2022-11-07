@@ -48,7 +48,17 @@ Texture2D    tex            : register( t0 ) ;		// ディフューズマップテクスチャ
 // ハードシャドウ
 //SamplerState depth              : register( s1 ) ;		// 深度バッファテクスチャ
 // ソフトシャドウ
-SamplerComparisonState depth:register(s1);
+SamplerComparisonState depthSmp          // 深度バッファテクスチャ
+{
+	// sampler state
+	Filter = COMPARISON_MIN_MAG_MIP_LINEAR;
+	MaxAnisotropy = 1;
+	AddressU = MIRROR;
+	AddressV = MIRROR;
+
+	// sampler conmparison state
+	ComparisonFunc = GREATER;
+};
 Texture2D    depthtex              : register(t1) ;		// 深度バッファテクスチャ
 
 // main関数
@@ -121,9 +131,12 @@ PSOutput main( PSInput input )
 		//float3 shadowColor = output.Color0.xyz;
 		//float3 finalColor = lerp(output.Color0.xyz, shadowColor, shadowRate);
 		//output.Color0.xyz = finalColor;
-	
+		
+		output.Color0 = depthtex.Sample(depthSmp, input.uv0.xy);
+		return output;
+
 		float shadow = depthtex.SampleCmpLevelZero(
-			depth,	// 使用するサンプラーステート
+			depthSmp,	// 使用するサンプラーステート
 			shadowMapUV, // シャドウマップにアクセスするUV座標
 			zlpos	// 比較するZ値
 		);
