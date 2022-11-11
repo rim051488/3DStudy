@@ -20,7 +20,7 @@ PSOutput main(PSInput input )
 
 
 	// Z値を色として出力
-	output.Color0 = pow(input.vpos.z/ input.vpos.w,10);
+	output.Color0 = input.vpos.z/ input.vpos.w;
 	//output.Color0 = input.pos.r;
 
 	// 透明にならないようにアルファは必ず１

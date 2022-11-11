@@ -5,6 +5,8 @@
 // フィールドの線を中心から何本描画するか
 #define FIELD_EXTEND  (20)
 
+
+
 GameScene::GameScene()
 {
     SceneFlag_ = false;
@@ -68,7 +70,7 @@ bool GameScene::InitGame(void)
     SetDrawValidFloatTypeGraphCreateFlag(true);
     SetCreateDrawValidGraphChannelNum(1);
     SetCreateGraphColorBitDepth(16);
-    DepthBufferGraphHandle_ = MakeScreen(screenSize_.x, screenSize_.y, false);
+    ShadowMap_ = MakeScreen(screenSize_.x, screenSize_.y, false);
     // 設定を元に戻す
     SetDrawValidFloatTypeGraphCreateFlag(false);
     SetCreateDrawValidGraphChannelNum(4);
@@ -90,27 +92,35 @@ uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
     controller_->Update(delta);
     if (controller_->Press(InputID::Left))
     {
-        pos_.x -= 5;
+        cAngle_.x -= 5;
     }
     if (controller_->Press(InputID::Right))
     {
-        pos_.x += 5;
+        cAngle_.x += 5;
     }
     if (controller_->Press(InputID::Up))
     {
-        pos_.z += 5;
+        cAngle_.z += 5;
     }
     if (controller_->Press(InputID::Down))
     {
-        pos_.z -= 5;
+        cAngle_.z -= 5;
     }
     if (CheckHitKey(KEY_INPUT_W))
     {
-        pos_.y += 5;
+        pos_.z += 5;
     }
     if (CheckHitKey(KEY_INPUT_S))
     {
-        pos_.y -= 5;
+        pos_.z -= 5;
+    }
+    if (CheckHitKey(KEY_INPUT_A))
+    {
+        pos_.x -= 5;
+    }
+    if (CheckHitKey(KEY_INPUT_D))
+    {
+        pos_.x += 5;
     }
     if (CheckHitKey(KEY_INPUT_1))
     {
@@ -124,18 +134,18 @@ uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
     {
         SetUsePixelShader(toon);
     }
-    if (CheckHitKey(KEY_INPUT_A))
-    {
-        size_.x -= 0.1;
-        size_.y -= 0.1;
-        size_.z -= 0.1;
-    }
-    if (CheckHitKey(KEY_INPUT_D))
-    {
-        size_.x += 0.1;
-        size_.y += 0.1;
-        size_.z += 0.1;
-    }
+    //if (CheckHitKey(KEY_INPUT_A))
+    //{
+    //    size_.x -= 0.1;
+    //    size_.y -= 0.1;
+    //    size_.z -= 0.1;
+    //}
+    //if (CheckHitKey(KEY_INPUT_D))
+    //{
+    //    size_.x += 0.1;
+    //    size_.y += 0.1;
+    //    size_.z += 0.1;
+    //}
     MATRIX Rot = MMult(MGetRotX(cRot_.x), MGetRotY(cRot_.y));
     VECTOR offset = VTransform(VGet(0, 100, -150), Rot);
     cPos_ = { (cAngle_.x + offset.x),(cAngle_.y + offset.y),(cAngle_.z + offset.z) };
@@ -278,27 +288,25 @@ void GameScene::ShaderSetUp(int model)
 void GameScene::SetupDepthImage(void)
 {
     // 描画先を影用深度記録画像にする
-    SetDrawScreen(DepthBufferGraphHandle_);
+    SetDrawScreen(ShadowMap_);
     //SetDrawScreen(screenID_);
     // 影用深度記録画像を真っ白にする
     SetBackgroundColor(255, 255, 255);
     ClearDrawScreen();
     SetBackgroundColor(0, 0, 0);
-    // カメラのタイプを正射影タイプセット、描画範囲も指定
-    //SetupCamera_Ortho(1000);
-    // 描画する奥行範囲をセット
-    //SetCameraNearFar(0.0f, 13000.0f);
+     //カメラのタイプを正射影タイプセット、描画範囲も指定
+    SetupCamera_Ortho(offsetOrtho);
+     //描画する奥行範囲をセット
+    SetCameraNearFar(offsetNear, offsetFar);
 
     // カメラの向きはライトの向き
     LightDirecion_ = GetLightDirection();
 
     auto light = GetLightDirection();
-    //auto lightPos = VAdd(VGet(pos_.x, pos_.y, pos_.z), VScale(light, -500));
-    //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(pos_.x, pos_.y, pos_.z));
-    //auto lightPos = VAdd(VGet(0.0f, 0.0f, 0.0f), VScale(light, -1000));
+    auto lightPos = VAdd(VGet(camTar.x, camTar.y, camTar.z), VScale(light, -2000));
+    SetCameraPositionAndTarget_UpVecY(lightPos, VGet(camTar.x, camTar.y, camTar.z));
+    //auto lightPos = VAdd(VGet(-500, 600.0f, -1000.0f), VScale(light, -500));
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
-    auto lightPos = VAdd(VGet(-500, 600.0f, -1000.0f), VScale(light, -500));
-    SetCameraPositionAndTarget_UpVecY(lightPos, VGet(0.0f, 0.0f, 0.0f));
 
 
     // 設定したカメラのビュー行列と射影表列を取得しておく
@@ -354,7 +362,7 @@ void GameScene::DrawModelWithDepthShadow(void)
     SetShaderConstantBuffer(cbufferVS, DX_SHADERTYPE_VERTEX, 4);
 
     // 影用深度記録画像をテクスチャ１にセット
-    SetUseTextureToShader(1, DepthBufferGraphHandle_);
+    SetUseTextureToShader(1, ShadowMap_);
     // ステージの描画
     SetUseVertexShader(vs_[2]);
     MV1DrawModel(stage_);
@@ -362,7 +370,7 @@ void GameScene::DrawModelWithDepthShadow(void)
     SetUseVertexShader(vs_[3]);
     MV1DrawModel(model_);
     MV1SetUseOrigShader(false);
-    DrawRotaGraph(133, 83, 0.25, 0.0, DepthBufferGraphHandle_, true);
+    DrawRotaGraph(133, 83, 0.25, 0.0, ShadowMap_, true);
     // 使ったテクスチャを解除
     SetUseTextureToShader(1, -1);
     // 設定した定数を解除

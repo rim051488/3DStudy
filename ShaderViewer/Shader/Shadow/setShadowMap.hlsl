@@ -46,19 +46,19 @@ SamplerState sam            : register( s0 ) ;		// ディフューズマップテクスチャ
 Texture2D    tex            : register( t0 ) ;		// ディフューズマップテクスチャ
 
 // ハードシャドウ
-//SamplerState depth              : register( s1 ) ;		// 深度バッファテクスチャ
+SamplerState depth : register(s1); // 深度バッファテクスチャ
 // ソフトシャドウ
-SamplerComparisonState depthSmp          // 深度バッファテクスチャ
-{
-	// sampler state
-	Filter = COMPARISON_MIN_MAG_MIP_LINEAR;
-	MaxAnisotropy = 1;
-	AddressU = MIRROR;
-	AddressV = MIRROR;
+//SamplerComparisonState depthSmp          // 深度バッファテクスチャ
+//{
+//	// sampler state
+//	Filter = COMPARISON_MIN_MAG_MIP_LINEAR;
+//	MaxAnisotropy = 1;
+//	AddressU = MIRROR;
+//	AddressV = MIRROR;
 
-	// sampler conmparison state
-	ComparisonFunc = GREATER;
-};
+//	// sampler conmparison state
+//	ComparisonFunc = GREATER;
+//};
 Texture2D    depthtex              : register(t1) ;		// 深度バッファテクスチャ
 
 // main関数
@@ -87,18 +87,18 @@ PSOutput main( PSInput input )
 	shadowMapUV *= float2(0.5f, -0.5f);
 	shadowMapUV += 0.5f;
 	// ライトビュースクリーン空間でのZ値を計算する
-	float zlpos = pow(input.lpos.z/input.lpos.w,10);
+	float zlpos = input.lpos.z/input.lpos.w;
 	 //UV座標を使ってシャドウマップから影情報をサンプリングする
 	if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f &&
 		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f)
 	{
 		 //ハードシャドウ
-		//float zshadowMap = depthtex.Sample(depth, shadowMapUV).r;
-		//if (zlpos > zshadowMap + 0.005f)
-		//{
-		//	// 遮断されている
-		//	output.Color0.xyz *= 0.5f;
-		//}
+        float zshadowMap = depthtex.Sample(depth, shadowMapUV).r;
+        if (zlpos > zshadowMap + 0.005f)
+        {
+			// 遮断されている
+            output.Color0.xyz *= 0.5f;
+        }
 
 		// ソフトシャドウ
 		
@@ -132,19 +132,19 @@ PSOutput main( PSInput input )
 		//float3 finalColor = lerp(output.Color0.xyz, shadowColor, shadowRate);
 		//output.Color0.xyz = finalColor;
 		
-		output.Color0 = depthtex.Sample(depthSmp, input.uv0.xy);
-		return output;
+		//output.Color0 = depthtex.Sample(depthSmp, input.uv0.xy);
+		//return output;
 
-		float shadow = depthtex.SampleCmpLevelZero(
-			depthSmp,	// 使用するサンプラーステート
-			shadowMapUV, // シャドウマップにアクセスするUV座標
-			zlpos	// 比較するZ値
-		);
+		//float shadow = depthtex.SampleCmpLevelZero(
+		//	depthSmp,	// 使用するサンプラーステート
+		//	shadowMapUV, // シャドウマップにアクセスするUV座標
+		//	zlpos	// 比較するZ値
+		//);
 
-		// シャドウカラーを計算
-		float3 shadowColor = output.Color0.xyz * 0.5f;
-		// 遮蔽率を使って線形補間
-		output.Color0.xyz = lerp(output.Color0.xyz, shadowColor,  shadow);
+		//// シャドウカラーを計算
+		//float3 shadowColor = output.Color0.xyz * 0.5f;
+		//// 遮蔽率を使って線形補間
+		//output.Color0.xyz = lerp(output.Color0.xyz, shadowColor,  shadow);
 	}
 	return output;
 }

@@ -11,6 +11,14 @@ struct LIGHT_MATRIX
     MATRIX projection;
 };
 
+// ライトカメラの注視点
+constexpr Vector3 camTar{ 0.0f, 0.0f, 0.0f };
+// ライトカメラの正射影の表示範囲
+constexpr float offsetOrtho = 2000.0f;
+// ライトカメラの手前の距離と奥の距離
+constexpr float offsetNear = 0.001f;
+constexpr float offsetFar = 4000.0f;
+
 class GameScene :
     public BaseScene
 {
@@ -77,7 +85,7 @@ private:
     int toonMap_;
     int tlbertType;
     // 影表現用
-    int DepthBufferGraphHandle_;
+    int ShadowMap_;
     int ps_[2];
     int vs_[4];
     // カメラのビュー行列と射影行列
