@@ -8,10 +8,10 @@ Render::~Render()
 {
 }
 
-void Render::SetupDepthImage()
+void Render::SetupShadowMap()
 {
 }
 
-void Render::DrawModelWithDepthShadow()
+void Render::DrawOffScreen()
 {
 }

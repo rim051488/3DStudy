@@ -8,7 +8,7 @@
 
 using namespace std;
 
-constexpr Vector2I screenSize{ 1060,660 };
+constexpr Vector2I screenSize{ 1280, 720 };
 
 void SceneMng::Run(void)
 {

@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -141,7 +141,9 @@ fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/stage2VS.vso Shader/Shadow/st
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/model1VS.vso Shader/Shadow/model1VS.hlsl
 fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/Shadow/model2VS.vso Shader/Shadow/model2VS.hlsl
 fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/shadowMap.pso Shader/Shadow/shadowMap.hlsl
-fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/setShadowMap.pso Shader/Shadow/setShadowMap.hlsl</Command>
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/Shadow/setShadowMap.pso Shader/Shadow/setShadowMap.hlsl
+
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/PostEffect/mono.pso Shader/PostEffect/mono.hlsl</Command>
     </PreBuildEvent>
     <CustomBuildStep>
       <Command>

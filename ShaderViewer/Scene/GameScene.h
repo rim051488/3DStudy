@@ -61,9 +61,19 @@ private:
     // シェーダのセットアップ
     void ShaderSetUp(int model);
     // 影用の震度記録画像の準備
-    void SetupDepthImage(void);
+    void SetupShadowMap(void);
     // 影用の震度記録画像を使った影を落とす処理も含めたモデルの描画
-    void DrawModelWithDepthShadow(void);
+    void DrawOffScreen(void);
+    /// <summary>
+    /// 作成したオフスクリーンにポストエフェクトをかける
+    /// </summary>
+    /// <param name="flag">ポストエフェクトをかけるか</param>
+    /// <param name="x">左上の座標のX座標</param>
+    /// <param name="y">左上の座標のY座標</param>
+    /// <param name="tex">オフスクリーン</param>
+    /// <param name="ps">シェーダ</param>
+    void SetUpPostEffect(bool flag, int x, int y, int tex, int ps);
+
     // 描画処理
     void Render_Process();
     // 軸の描画
@@ -88,6 +98,9 @@ private:
     int ShadowMap_;
     int ps_[2];
     int vs_[4];
+    // ポストエフェクト用
+    int PostTex_;
+    int PostPS_;
     // カメラのビュー行列と射影行列
     MATRIX LightCamera_ViewMatrix;
     MATRIX LightCamera_ProjectionMatrix;

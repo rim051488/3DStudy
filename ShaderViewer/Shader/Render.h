@@ -4,7 +4,7 @@ class Render
 public:
 	Render();
 	~Render();
-	void SetupDepthImage();
-	void DrawModelWithDepthShadow();
+	void SetupShadowMap();
+	void DrawOffScreen();
 };
 
