@@ -92,16 +92,16 @@ bool GameScene::InitGame(void)
     return true;
 }
 
-void GameScene::SetUpPostEffect(bool flag, int x, int y, int tex, int ps)
+void GameScene::SetUpPostEffect(bool flag, int x, int y, int img, int Postps)
 {
     int width, height;
-    GetGraphSize(tex, &width, &height);
-    std::array<VERTEX2DSHADER, 4> verts;
+    GetGraphSize(img, &width, &height);
+    std::array <VERTEX2DSHADER, 4> verts;
 
     if (flag)
     {
-
-        for (auto& v : verts) {
+        for (auto& v : verts)
+        {
             v.rhw = 1.0;
             v.dif = GetColorU8(0xff, 0xff, 0xff, 0xff); // ディフューズ
             v.spc = GetColorU8(255, 255, 255, 255);		// スペキュラ
@@ -129,19 +129,15 @@ void GameScene::SetUpPostEffect(bool flag, int x, int y, int tex, int ps)
         verts[3].pos.y = y + height;
         verts[3].u = 1.0f;
         verts[3].v = 1.0f;
-        //int alphamode, alphaparam;
-        //SetDrawBlendMode(DX_BLENDGRAPHTYPE_ALPHA, 255);
-        //GetDrawAlphaTest(&alphamode,&alphaparam);
-        //SetDrawAlphaTest(DX_CMP_GREATER, 0);
-        //SetUseAlphaTestFlag(true);
-        SetUsePixelShader(ps);
-        SetUseTextureToShader(0, tex);
+        SetUsePixelShader(Postps);
+
+        SetUseTextureToShader(0, img);
         DrawPrimitive2DToShader(verts.data(), verts.size(), DX_PRIMTYPE_TRIANGLESTRIP);
         MV1SetUseOrigShader(false);
     }
-    else
+    else if (!flag)
     {
-        DrawGraph(0, 0, tex, true);
+        DrawGraph(0, 0, img, true);
     }
     SetUseTextureToShader(0, -1);
 }
@@ -194,18 +190,6 @@ uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
     {
         SetUsePixelShader(toon);
     }
-    //if (CheckHitKey(KEY_INPUT_A))
-    //{
-    //    size_.x -= 0.1;
-    //    size_.y -= 0.1;
-    //    size_.z -= 0.1;
-    //}
-    //if (CheckHitKey(KEY_INPUT_D))
-    //{
-    //    size_.x += 0.1;
-    //    size_.y += 0.1;
-    //    size_.z += 0.1;
-    //}
     MATRIX Rot = MMult(MGetRotX(cRot_.x), MGetRotY(cRot_.y));
     VECTOR offset = VTransform(VGet(0, 100, -150), Rot);
     cPos_ = { (cAngle_.x + offset.x),(cAngle_.y + offset.y),(cAngle_.z + offset.z) };
@@ -261,7 +245,7 @@ void GameScene::DrawGame(float delta)
     //MV1DrawModel(model_);
     //MV1SetUseOrigShader(false);
     //MV1DrawModel(stage_);
-    SetUpPostEffect(false, 0, 0, PostTex_, PostPS_);
+
     DrawRotaGraph(133, 83, 0.25, 0.0, ShadowMap_, true);
     ScreenFlip();
 }
@@ -430,6 +414,7 @@ void GameScene::Render_Process()
     SetupShadowMap();
     // 影用の深度記録画像を使った影を落とす処理も含めたモデルの描画
     DrawOffScreen();
+    SetUpPostEffect(true, 0, 0, PostTex_, PostPS_);
 }
 
 void GameScene::DrawAxis(void)
