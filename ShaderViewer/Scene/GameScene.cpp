@@ -69,9 +69,6 @@ bool GameScene::InitGame(void)
     vs_[2] = LoadVertexShader("Shader/Shadow/stage2VS.vso");
     vs_[3] = LoadVertexShader("Shader/Shadow/model2VS.vso");
 
-    // ポストエフェクト用の変数の初期化
-    PostTex_ = MakeScreen(screenSize_.x, screenSize_.y);
-    PostPS_ = LoadPixelShader("Shader/PostEffect/mono.pso");
     // 作成する画像のフォーマットを浮動小数点型で１チャンネル、１６ビットにする
     SetDrawValidFloatTypeGraphCreateFlag(true);
     SetCreateDrawValidGraphChannelNum(1);
@@ -81,6 +78,11 @@ bool GameScene::InitGame(void)
     SetDrawValidFloatTypeGraphCreateFlag(false);
     SetCreateDrawValidGraphChannelNum(4);
     SetCreateGraphColorBitDepth(32);
+    // ポストエフェクト用の変数の初期化
+    PostTex_ = MakeScreen(screenSize_.x, screenSize_.y, false);
+    PostPS_ = LoadPixelShader("Shader/PostEffect/mono.pso");
+    sideBlur_ = MakeScreen(screenSize_.x / 2, screenSize_.y, false);
+    vertBlur_ = MakeScreen(screenSize_.x / 2, screenSize_.y / 2, false);
     // トーン用の画像をセット
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_, VGet(pos_.x, pos_.y, pos_.z));
@@ -242,8 +244,7 @@ void GameScene::DrawGame(float delta)
     //ClsDrawScreen();
     //SetBackgroundColor(128, 128, 128);
 
-    Render_Process();
-    // ライトの位置にあるカメラ(本当にライトの位置？)
+        // ライトの位置にあるカメラ(本当にライトの位置？)
     //auto light = VScale(GetLightDirection(), 2);
     //auto lightPos = VAdd(VGet(cAngle_.x, cAngle_.y, cAngle_.z), VScale(light, -100));
     //SetCameraPositionAndTarget_UpVecY(lightPos, VGet(cAngle_.x, cAngle_.y, cAngle_.z));
@@ -261,8 +262,9 @@ void GameScene::DrawGame(float delta)
     //MV1DrawModel(model_);
     //MV1SetUseOrigShader(false);
     //MV1DrawModel(stage_);
-    SetUpPostEffect(false, 0, 0, PostTex_, PostPS_);
-    DrawRotaGraph(133, 83, 0.25, 0.0, ShadowMap_, true);
+
+    Render_Process();
+
     ScreenFlip();
 }
 
@@ -429,7 +431,11 @@ void GameScene::Render_Process()
     // 影用の深度記録画像の準備を行う
     SetupShadowMap();
     // 影用の深度記録画像を使った影を落とす処理も含めたモデルの描画
-    DrawOffScreen();
+    DrawOffScreen();    
+    // ポストエフェクトを書けるかどうか
+    SetUpPostEffect(true, 0, 0, PostTex_, PostPS_);
+    DrawRotaGraph(133, 83, 0.25, 0.0, ShadowMap_, true);
+
 }
 
 void GameScene::DrawAxis(void)

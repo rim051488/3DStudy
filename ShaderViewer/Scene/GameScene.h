@@ -64,6 +64,8 @@ private:
     void SetupShadowMap(void);
     // 影用の震度記録画像を使った影を落とす処理も含めたモデルの描画
     void DrawOffScreen(void);
+    // 縦
+
     /// <summary>
     /// 作成したオフスクリーンにポストエフェクトをかける
     /// </summary>
@@ -101,6 +103,11 @@ private:
     // ポストエフェクト用
     int PostTex_;
     int PostPS_;
+    // 被写界深度用
+    // 縦ブラー
+    int vertBlur_;
+    // 横ブラー
+    int sideBlur_;
     // カメラのビュー行列と射影行列
     MATRIX LightCamera_ViewMatrix;
     MATRIX LightCamera_ProjectionMatrix;
