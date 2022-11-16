@@ -72,9 +72,9 @@ private:
     /// <param name="flag">ポストエフェクトをかけるか</param>
     /// <param name="x">左上の座標のX座標</param>
     /// <param name="y">左上の座標のY座標</param>
-    /// <param name="tex">オフスクリーン</param>
-    /// <param name="ps">シェーダ</param>
-    void SetUpPostEffect(bool flag, int x, int y, int tex, int ps);
+    /// <param name="img">オフスクリーン</param>
+    /// <param name="Postps">シェーダ</param>
+    void SetUpPostEffect(bool flag, int x, int y, int img, int Postps);
 
     // 描画処理
     void Render_Process();
