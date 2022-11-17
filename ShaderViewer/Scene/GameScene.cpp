@@ -68,7 +68,6 @@ bool GameScene::InitGame(void)
     shadowMesh4_ = LoadVertexShader("Shader/Shadow/model1VS.vso");
     setMesh_ = LoadVertexShader("Shader/Shadow/stage2VS.vso");
     setMesh4_ = LoadVertexShader("Shader/Shadow/model2VS.vso");
-
     // 作成する画像のフォーマットを浮動小数点型で１チャンネル、１６ビットにする
     SetDrawValidFloatTypeGraphCreateFlag(true);
     SetCreateDrawValidGraphChannelNum(1);
@@ -79,6 +78,7 @@ bool GameScene::InitGame(void)
     SetCreateDrawValidGraphChannelNum(4);
     SetCreateGraphColorBitDepth(32);
     // ポストエフェクト用の変数の初期化
+    flag_ = false;
     PostTex_ = MakeScreen(screenSize_.x, screenSize_.y, false);
     PostPS_ = LoadPixelShader("Shader/PostEffect/mono.pso");
     sideBlur_ = MakeScreen(screenSize_.x / 2, screenSize_.y, false);
@@ -96,58 +96,51 @@ bool GameScene::InitGame(void)
 
 void GameScene::SetUpPostEffect(bool flag, int x, int y, int img, int Postps)
 {
-    int width, height;
-    GetGraphSize(img, &width, &height);
-    std::array <VERTEX2DSHADER, 4> verts = {};
-
     if (flag)
     {
+        int width, height;
+        GetGraphSize(img, &width, &height);
+        std::array<VERTEX2DSHADER, 4> verts;
         for (auto& v : verts)
         {
-            v.rhw = 1.0;
-            v.dif = GetColorU8(0xff, 0xff, 0xff, 0xff); // ディフューズ
-            v.spc = GetColorU8(255, 255, 255, 255);		// スペキュラ
+            v.rhw = 1.0f;
+            v.dif = GetColorU8(255, 255, 255, 255);
+            v.spc = GetColorU8(255, 255, 255, 255);
             v.su = 0.0f;
             v.sv = 0.0f;
             v.pos.z = 0.0f;
         }
         // 左上
         verts[0].pos.x = x;
-        verts[0].pos.y = y;
+        verts[0].pos.z = y;
         verts[0].u = 0.0f;
         verts[0].v = 0.0f;
         // 右上
         verts[1].pos.x = x + width;
-        verts[1].pos.y = y;
+        verts[1].pos.z = y;
         verts[1].u = 1.0f;
         verts[1].v = 0.0f;
         // 左下
         verts[2].pos.x = x;
-        verts[2].pos.y = y + height;
+        verts[2].pos.z = y + height;
         verts[2].u = 0.0f;
         verts[2].v = 1.0f;
-        // 右下
+        // 左上
         verts[3].pos.x = x + width;
-        verts[3].pos.y = y + height;
+        verts[3].pos.z = y + height;
         verts[3].u = 1.0f;
         verts[3].v = 1.0f;
         SetUsePixelShader(Postps);
-
         SetUseTextureToShader(0, img);
-        
-        //char msg[256];
-        //sprintf_s(msg, "verts size=%d\n", verts.size());
-        //OutputDebugString(msg);
-        //_CrtCheckMemory();
         DrawPrimitive2DToShader(verts.data(), verts.size(), DX_PRIMTYPE_TRIANGLESTRIP);
-        MV1SetUseOrigShader(false);
-        DrawGraph(0, 0, img, true);
+        //DrawGraph(x, y, img, true);
     }
-    else if (!flag)
+    else
     {
-        DrawGraph(0, 0, img, true);
+        SetUseTextureToShader(0, -1);
+        DrawGraph(x, y, img, true);
     }
-    SetUseTextureToShader(0, -1);
+    //SetUseTextureToShader(0, -1);
 }
 
 uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
@@ -164,11 +157,13 @@ uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
     }
     if (controller_->Press(InputID::Up))
     {
-        cAngle_.z += 5;
+        //cAngle_.z += 5;
+        flag_ = true;
     }
     if (controller_->Press(InputID::Down))
     {
-        cAngle_.z -= 5;
+        //cAngle_.z -= 5;
+        flag_ = false;
     }
     if (CheckHitKey(KEY_INPUT_W))
     {
@@ -381,7 +376,7 @@ void GameScene::Render_Process()
     ClsDrawScreen();
 
     // ポストエフェクトを書けるかどうか
-    SetUpPostEffect(true, 0, 0, PostTex_, PostPS_);
+    SetUpPostEffect(flag_, 0, 0, PostTex_, PostPS_);
     //SetUpPostEffect(false, 0, 0, PostTex_, PostPS_);
     SetBackgroundColor(128, 128, 128);
 

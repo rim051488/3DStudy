@@ -112,6 +112,8 @@ private:
     int vertBlur_;
     // 横ブラー
     int sideBlur_;
+    // ポストエフェクトをかけるか
+    bool flag_;
     // カメラのビュー行列と射影行列
     MATRIX LightCamera_ViewMatrix;
     MATRIX LightCamera_ProjectionMatrix;
