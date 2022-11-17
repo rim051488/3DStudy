@@ -12,12 +12,11 @@ struct PSOutput
 
 SamplerState texsam : register(s0);
 Texture2D<float4> tex : register(t0);
-
 PSOutput main(PSInput input)
 {
     PSOutput output;
-    //output.color = float4(tex.Sample(texsam, input.uv.xy)); // ;
-    output.color = float4(0.5f, 0.5f, 0.5f, 1.0f);
+    //output.color = tex.Sample(texsam, input.uv);
+    output.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
     // ÉÇÉmÉNÉçâª
     //float M = 0.299f * output.color.x + 0.587f * output.color.z + 0.114f * output.color.z;
     //output.color.x = M;

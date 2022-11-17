@@ -98,8 +98,12 @@ private:
     int tlbertType;
     // 影表現用
     int ShadowMap_;
-    int ps_[2];
-    int vs_[4];
+    // シャドウマップの作成・影の描画
+    int Setupps_,setps_;
+    // シャドウマップの作成
+    int shadowMesh_,shadowMesh4_;
+    // 影の描画
+    int setMesh_, setMesh4_;
     // ポストエフェクト用
     int PostTex_;
     int PostPS_;
