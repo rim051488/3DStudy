@@ -98,7 +98,9 @@ private:
     int tlbertType;
     // 影表現用
     int ShadowMap_;
-    // シャドウマップの作成・影の描画
+    // シャドウマップの作成
+    std::array<int, 6> shadowVS_;
+    int shadowPS_;
     int Setupps_,setps_;
     // シャドウマップの作成
     int shadowMesh_,shadowMesh4_;
@@ -106,7 +108,7 @@ private:
     int setMesh_, setMesh4_;
     // ポストエフェクト用
     int PostTex_;
-    int PostPS_;
+    std::array<int, 2> PostPS_;
     // 被写界深度用
     // 縦ブラー
     int vertBlur_;
@@ -121,7 +123,6 @@ private:
     LIGHT_MATRIX* lightMat_;
     LIGHT_MATRIX lightM_;
     int cbufferVS, cbufferPS;
-
     // ディレクション
     VECTOR LightDirecion_;
     DirectionLight directionLight_;

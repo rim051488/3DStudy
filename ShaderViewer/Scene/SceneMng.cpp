@@ -12,15 +12,15 @@ constexpr Vector2I screenSize{ 1280, 720 };
 
 void SceneMng::Run(void)
 {
-	if (!InitFlag_)
-	{
+	//if (!InitFlag_)
+	//{
 		// 確認のためにもう一度イニシャライズする
 		if (!SysInit())
 		{
 			return;
 		}
-	}
-	CreateMaskScreen();
+	//}
+	//CreateMaskScreen();
 	scene_ = std::make_unique<GameScene>();
 
 	time_.DeltaTimeStart();
@@ -51,9 +51,13 @@ const Vector2I& SceneMng::GetScreenSize(void)
 bool SceneMng::SysInit(void)
 {
 	DebugStart(time_);
-	SetWindowText("3DDrawing");
+	SetWindowText("ShaderViewer");
 	SetGraphMode(screenSize.x, screenSize.y, 32);
 	ChangeWindowMode(true);
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
+	SetUseZBuffer3D(true);
+	SetWriteZBuffer3D(true);
+
 	if (DxLib_Init() == -1)
 	{
 		return false;

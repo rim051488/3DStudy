@@ -7,8 +7,6 @@
 // フィールドの線を中心から何本描画するか
 #define FIELD_EXTEND  (20)
 
-
-
 GameScene::GameScene()
 {
     SceneFlag_ = false;
@@ -50,7 +48,6 @@ bool GameScene::InitGame(void)
     stage_ = MV1LoadModel("./Resource/Model/Stage2.mv1");
     //stage_ = MV1LoadModel("./Resource/Model/Stage1.mv1");
     model_ = MV1LoadModel("./Resource/Model/OM01.mv1");
-    SetUseDirect3DVersion(DX_DIRECT3D_11);
     // ライトのセットアップ
     LightSetUp();
     //// 定数バッファの確保(理解できるまでdxlib内のライトを使うこと)
@@ -62,10 +59,11 @@ bool GameScene::InitGame(void)
     lightM_.projection = MGetIdent();
 
     // 影用のシェーダを初期化
-    Setupps_ = LoadPixelShader("Shader/Shadow/shadowMap.pso");
+    shadowVS_[0] = LoadVertexShader("Shader/ShadowMap/Mesh1Shadow.vso");
+    shadowVS_[1] = LoadVertexShader("Shader/ShadowMap/Mesh4Shadow.vso");
+    shadowPS_ = LoadPixelShader("Shader/ShadowMap/ShadowMapPS.pso");
+
     setps_ = LoadPixelShader("Shader/Shadow/setShadowMap.pso");
-    shadowMesh_ = LoadVertexShader("Shader/Shadow/stage1VS.vso");
-    shadowMesh4_ = LoadVertexShader("Shader/Shadow/model1VS.vso");
     setMesh_ = LoadVertexShader("Shader/Shadow/stage2VS.vso");
     setMesh4_ = LoadVertexShader("Shader/Shadow/model2VS.vso");
     // 作成する画像のフォーマットを浮動小数点型で１チャンネル、１６ビットにする
@@ -77,12 +75,16 @@ bool GameScene::InitGame(void)
     SetDrawValidFloatTypeGraphCreateFlag(false);
     SetCreateDrawValidGraphChannelNum(4);
     SetCreateGraphColorBitDepth(32);
-    // ポストエフェクト用の変数の初期化
+
+    // ポストエフェクト用の変数の初期化+++++++++++++++++++++++++++++++++++++++++++
     flag_ = false;
-    PostTex_ = MakeScreen(screenSize_.x, screenSize_.y, false);
-    PostPS_ = LoadPixelShader("Shader/PostEffect/mono.pso");
+    PostTex_ = MakeScreen(screenSize_.x, screenSize_.y);
+    PostPS_[0] = LoadPixelShader("Shader/PostEffect/mono.pso");
+    PostPS_[1] = LoadPixelShader("Shader/PostEffect/aveblur.pso");
     sideBlur_ = MakeScreen(screenSize_.x / 2, screenSize_.y, false);
     vertBlur_ = MakeScreen(screenSize_.x / 2, screenSize_.y / 2, false);
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     // トーン用の画像をセット
     toonMap_ = LoadGraph("./Resource/Model/ToonMap.png");
     MV1SetPosition(model_, VGet(pos_.x, pos_.y, pos_.z));
@@ -96,51 +98,51 @@ bool GameScene::InitGame(void)
 
 void GameScene::SetUpPostEffect(bool flag, int x, int y, int img, int Postps)
 {
+    assert(img > 0);
+    assert(Postps > 0);
     if (flag)
     {
         int width, height;
         GetGraphSize(img, &width, &height);
         std::array<VERTEX2DSHADER, 4> verts;
-        for (auto& v : verts)
-        {
-            v.rhw = 1.0f;
-            v.dif = GetColorU8(255, 255, 255, 255);
-            v.spc = GetColorU8(255, 255, 255, 255);
+        for (auto& v : verts) {
+            v.rhw = 1.0;
+            v.dif = GetColorU8(0xff, 0xff, 0xff, 0xff); // ディフューズ
+            v.spc = GetColorU8(255, 255, 255, 255);		// スペキュラ
             v.su = 0.0f;
             v.sv = 0.0f;
             v.pos.z = 0.0f;
         }
-        // 左上
+         //左上
         verts[0].pos.x = x;
-        verts[0].pos.z = y;
+        verts[0].pos.y = y;
         verts[0].u = 0.0f;
         verts[0].v = 0.0f;
-        // 右上
+         //右上
         verts[1].pos.x = x + width;
-        verts[1].pos.z = y;
+        verts[1].pos.y = y;
         verts[1].u = 1.0f;
         verts[1].v = 0.0f;
-        // 左下
+         //左下
         verts[2].pos.x = x;
-        verts[2].pos.z = y + height;
+        verts[2].pos.y = y + height;
         verts[2].u = 0.0f;
         verts[2].v = 1.0f;
-        // 左上
+         //右下
         verts[3].pos.x = x + width;
-        verts[3].pos.z = y + height;
+        verts[3].pos.y = y + height;
         verts[3].u = 1.0f;
         verts[3].v = 1.0f;
-        SetUsePixelShader(Postps);
+        assert(SetUsePixelShader(Postps)>=0);
         SetUseTextureToShader(0, img);
-        DrawPrimitive2DToShader(verts.data(), verts.size(), DX_PRIMTYPE_TRIANGLESTRIP);
-        //DrawGraph(x, y, img, true);
+        assert(DrawPrimitive2DToShader(verts.data(), verts.size(), DX_PRIMTYPE_TRIANGLESTRIP) >=0);
     }
     else
     {
         SetUseTextureToShader(0, -1);
         DrawGraph(x, y, img, true);
     }
-    //SetUseTextureToShader(0, -1);
+    SetUseTextureToShader(0, -1);
 }
 
 uniqueScene GameScene::Update(float delta, uniqueScene ownScene)
@@ -226,6 +228,8 @@ uniqueScene GameScene::UpdateGameEnd(float delta, uniqueScene ownScene)
 void GameScene::DrawGame(float delta)
 {
     Render_Process();   
+    // ポストエフェクトを書けるかどうか
+    SetUpPostEffect(flag_, 0, 0, PostTex_, PostPS_[1]);
     DrawRotaGraph(133, 83, 0.25, 0.0, ShadowMap_, true);
     ScreenFlip();
 }
@@ -317,13 +321,13 @@ void GameScene::SetupShadowMap(void)
 
     MV1SetUseOrigShader(true);
     // 深度値への描画用のピクセルシェーダをセット
-    SetUsePixelShader(Setupps_);
+    SetUsePixelShader(shadowPS_);
     // 深度記録画像への剛体メッシュ描画用の頂点シェーダをセット
-    SetUseVertexShader(shadowMesh_);
+    SetUseVertexShader(shadowVS_[0]);
     // ステージを描画
     MV1DrawModel(stage_);
     // 深度地記録画像へのスキニングメッシュ描画用の頂点シェーダをセット
-    SetUseVertexShader(shadowMesh4_);
+    SetUseVertexShader(shadowVS_[1]);
     MV1DrawModel(model_);
     MV1SetUseOrigShader(false);
     // ライトの座標をもらっておく(カメラがライトの情報をもっている)
@@ -375,8 +379,6 @@ void GameScene::Render_Process()
     SetDrawScreen(screenID_);
     ClsDrawScreen();
 
-    // ポストエフェクトを書けるかどうか
-    SetUpPostEffect(flag_, 0, 0, PostTex_, PostPS_);
     //SetUpPostEffect(false, 0, 0, PostTex_, PostPS_);
     SetBackgroundColor(128, 128, 128);
 
