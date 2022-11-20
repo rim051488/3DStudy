@@ -45,8 +45,8 @@ bool GameScene::InitGame(void)
     angle_ = 0.0f;
     size_ = Vector3{ 20.0f,20.0f,20.0f };
     // モデルのセット
-    stage_ = MV1LoadModel("./Resource/Model/Stage2.mv1");
-    //stage_ = MV1LoadModel("./Resource/Model/Stage1.mv1");
+    //stage_ = MV1LoadModel("./Resource/Model/Stage2.mv1");
+    stage_ = MV1LoadModel("./Resource/Model/Stage1.mv1");
     model_ = MV1LoadModel("./Resource/Model/OM01.mv1");
     // ライトのセットアップ
     LightSetUp();
