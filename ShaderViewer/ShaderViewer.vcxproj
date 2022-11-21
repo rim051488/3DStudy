@@ -148,7 +148,7 @@ fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/ShadowMap/Mesh4Shadow.vso Shader/Sha
 fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/ShadowMap/ShadowMapPS.pso Shader/ShadowMap/ShadowMapPS.hlsl
 
 fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/PostEffect/mono.pso Shader/PostEffect/mono.hlsl
-fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/PostEffect/aveblur.pso Shader/PostEffect/AverageBlur.hlsl
+fxc.exe /T ps_5_0 /E "main" /O3  /Fo Shader/PostEffect/aveblur.pso Shader/PostEffect/aveblur.hlsl
 </Command>
     </PreBuildEvent>
     <CustomBuildStep>

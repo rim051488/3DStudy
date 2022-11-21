@@ -25,7 +25,7 @@ struct CONST_BUFFER_BASE
     float4x4 AntiViewportMat;
     float4x4 ProjMat;
     float4x3 ViewMat;
-    float4x3 LacalWorldMat;
+    float4x3 LocalWorldMat;
     
     float4 ToonOutLineSize;
     float DiffuseSource;
@@ -60,38 +60,103 @@ cbuffer LIGHT_VIEW : register(b4)
 VSOutput main(VSInput input)
 {
     VSOutput output;
-    float4 pos = float4(input.pos.xyz, 1.0f);
+    float4 pos = float4(input.pos, 1);
     float4 WorldPos;
     float4 ViewPos;
-    // ローカル座標をワールド座標に変換
-    WorldPos.xyz = mul(pos, g_Base.LacalWorldMat);
+
+	// ローカル座標をワールド座標にする
+    //WorldPos.xyz = mul(pos, g_Base.LocalWorldMat);
+    //WorldPos.w = 1.0f;
+	
+    WorldPos.x = dot(pos, g_Base.LocalWorldMat[0]);
+    WorldPos.y = dot(pos, g_Base.LocalWorldMat[1]);
+    WorldPos.z = dot(pos, g_Base.LocalWorldMat[2]);
     WorldPos.w = 1.0f;
-    // ワールド座標をビュー座標に変換
-    ViewPos.xyz = mul(WorldPos, g_Base.ViewMat);
+
+	// ワールド座標をビュー行列にする
+    //ViewPos.xyz = mul(WorldPos, g_Base.ViewMat);
+    //ViewPos.w = 1.0f;
+	
+    ViewPos.x = dot(WorldPos.xyz, g_Base.ViewMat[0]);
+    ViewPos.y = dot(WorldPos.xyz, g_Base.ViewMat[1]);
+    ViewPos.z = dot(WorldPos.xyz, g_Base.ViewMat[2]);
     ViewPos.w = 1.0f;
-    // ビュー座標を射影座標に変換
-    output.svpos = mul(ViewPos, g_Base.ProjMat);
-    
-    // 従法線・接線・法線をビューベクトルに変換
+
+	// ローカル座標をワールド座標にする
+    //output.svpos = mul(ViewPos, g_Base.ProjMat);
+	
+    output.svpos.x = dot(ViewPos, g_Base.ProjMat[0]);
+    output.svpos.y = dot(ViewPos, g_Base.ProjMat[1]);
+    output.svpos.z = dot(ViewPos, g_Base.ProjMat[2]);
+    output.svpos.w = dot(ViewPos, g_Base.ProjMat[3]);
+
+	// 従法線、接線、法線をビューベクトルに変換
     float3 WorldNrm;
     float3 ViewNrm;
-    
-    WorldNrm.x = dot(input.norm, g_Base.LacalWorldMat[0].xyz);
-    WorldNrm.y = dot(input.norm, g_Base.LacalWorldMat[1].xyz);
-    WorldNrm.z = dot(input.norm, g_Base.LacalWorldMat[2].xyz);
-    
+	
+    WorldNrm.x = dot(input.norm, g_Base.LocalWorldMat[0].xyz);
+    WorldNrm.y = dot(input.norm, g_Base.LocalWorldMat[1].xyz);
+    WorldNrm.z = dot(input.norm, g_Base.LocalWorldMat[2].xyz);
+
     ViewNrm.x = dot(WorldNrm, g_Base.ViewMat[0].xyz);
     ViewNrm.y = dot(WorldNrm, g_Base.ViewMat[1].xyz);
     ViewNrm.z = dot(WorldNrm, g_Base.ViewMat[2].xyz);
-    
+
+    output.uv.x = dot(input.uv0, g_OtherMat.TextureMat[0][0]);
+    output.uv.y = dot(input.uv0, g_OtherMat.TextureMat[0][1]);
+
     output.pos = ViewPos;
     output.norm = ViewNrm;
-    
-    // カメラ情報をセット
-    float4 lViewPos = mul(g_lightView, WorldPos);
-    output.lpos = mul(g_lightProj, lViewPos);
-    
+
+	// カメラ情報をセット
+    float4 LviewPos = mul(g_lightView, WorldPos);
+    output.lpos = mul(g_lightProj, LviewPos);
+
     return output;
+
+    //VSOutput output;
+    //float4 pos = float4(input.pos.xyz, 1.0f);
+    //float4 WorldPos;
+    //float4 ViewPos;
+    //// ローカル座標をワールド座標に変換
+    //WorldPos.x = dot(pos.xyz, g_Base.LocalWorldMat[0].xyz);
+    //WorldPos.y = dot(pos.xyz, g_Base.LocalWorldMat[1].xyz);
+    //WorldPos.z = dot(pos.xyz, g_Base.LocalWorldMat[2].xyz);
+    ////WorldPos.xyz = mul(pos, g_Base.LocalWorldMat);
+    //WorldPos.w = 1.0f;
+    //// ワールド座標をビュー座標に変換
+    //ViewPos.x = dot(WorldPos.xyz, g_Base.ViewMat[0]);
+    //ViewPos.y = dot(WorldPos.xyz, g_Base.ViewMat[1]);
+    //ViewPos.z = dot(WorldPos.xyz, g_Base.ViewMat[2]);
+    ////ViewPos.xyz = mul(WorldPos, g_Base.ViewMat);
+    //ViewPos.w = 1.0f;
+    //// ビュー座標を射影座標に変換
+    //output.svpos.x = dot(ViewPos, g_Base.ProjMat[0]);
+    //output.svpos.y = dot(ViewPos, g_Base.ProjMat[1]);
+    //output.svpos.z = dot(ViewPos, g_Base.ProjMat[2]);
+    //output.svpos.w = dot(ViewPos, g_Base.ProjMat[3]);
+    ////output.svpos = mul(ViewPos, g_Base.ProjMat);
+    
+    //// 従法線・接線・法線をビューベクトルに変換
+    //float3 WorldNrm;
+    //float3 ViewNrm;
+    
+    //WorldNrm.x = dot(input.norm, g_Base.LocalWorldMat[0].xyz);
+    //WorldNrm.y = dot(input.norm, g_Base.LocalWorldMat[1].xyz);
+    //WorldNrm.z = dot(input.norm, g_Base.LocalWorldMat[2].xyz);
+    
+    //ViewNrm.x = dot(WorldNrm, g_Base.ViewMat[0].xyz);
+    //ViewNrm.y = dot(WorldNrm, g_Base.ViewMat[1].xyz);
+    //ViewNrm.z = dot(WorldNrm, g_Base.ViewMat[2].xyz);
+    
+    //output.pos = ViewPos;
+    //output.norm = ViewNrm;
+    
+    //// カメラ情報をセット
+    //float4 lViewPos = mul(g_lightView, WorldPos);
+    //output.lpos = mul(g_lightProj, lViewPos);
+    
+    //return output;
 }
 
 //struct VertexInput {
