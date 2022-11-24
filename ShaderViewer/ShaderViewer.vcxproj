@@ -217,6 +217,27 @@ fxc.exe /T vs_5_0 /E "main" /O3  /Fo Shader/UseNormNoMesh/vs.vso Shader/UseNormN
     <ClInclude Include="Scene\SceneMng.h" />
     <ClInclude Include="Shader\Render.h" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\ShadowMap\Mesh1Shadow.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resource/Shader/ShadowMap/Mesh1.vso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shader\ShadowMap\Mesh4Shadow.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resource/Shader/ShadowMap/Mesh4.vso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shader\ShadowMap\ShadowMapPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resource/Shader/ShadowMap/shadowMap.pso</ObjectFileOutput>
+    </FxCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

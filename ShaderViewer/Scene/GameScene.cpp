@@ -59,9 +59,9 @@ bool GameScene::InitGame(void)
     lightM_.projection = MGetIdent();
 
     // 影用のシェーダを初期化
-    shadowVS_[0] = LoadVertexShader("Shader/ShadowMap/Mesh1Shadow.vso");
-    shadowVS_[1] = LoadVertexShader("Shader/ShadowMap/Mesh4Shadow.vso");
-    shadowPS_ = LoadPixelShader("Shader/ShadowMap/ShadowMapPS.pso");
+    shadowVS_[0] = LoadVertexShader("Resource/Shader/ShadowMap/Mesh1.vso");
+    shadowVS_[1] = LoadVertexShader("Resource/Shader/ShadowMap/Mesh4.vso");
+    shadowPS_ = LoadPixelShader("Resource/Shader/ShadowMap/shadowMap.pso");
 
     setps_ = LoadPixelShader("Shader/Shadow/setShadowMap.pso");
     setMesh_ = LoadVertexShader("Shader/Shadow/stage2VS.vso");

@@ -123,4 +123,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\ShadowMap\Mesh1Shadow.hlsl" />
+    <FxCompile Include="Shader\ShadowMap\Mesh4Shadow.hlsl" />
+    <FxCompile Include="Shader\ShadowMap\ShadowMapPS.hlsl" />
+  </ItemGroup>
 </Project>
